@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-arabic: 'Noto Kufi Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+
+    /*
+     * Palette extraite des logos (logo_fr.png / logo_ar.png) : vert, or et
+     * rouge du drapeau mauritanien.
+     */
+    --color-primary: #1b5e3a;
+    --color-primary-dark: #123f27;
+    --color-primary-light: #e7f1ec;
+    --color-secondary: #f2b705;
+    --color-accent: #d62828;
+    --color-background: #f7f8f6;
+    --color-surface: #ffffff;
+    --color-text: #1f2937;
+    --color-muted: #6b7280;
+    --color-border: #e5e7eb;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html[dir='rtl'] {
+    font-family: var(--font-arabic);
+}
+
+#app-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-in-out;
+}
+
+html[dir='rtl'] #app-sidebar {
+    transform: translateX(100%);
+}
+
+#app-sidebar.sidebar-open,
+html[dir='rtl'] #app-sidebar.sidebar-open {
+    transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+    #app-sidebar {
+        transform: none !important;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.45s ease-out;
+}
+
+@keyframes logo-fall {
+    0% {
+        opacity: 0;
+        transform: translateY(-180px) scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    65% {
+        transform: translateY(-26px) scale(1);
+    }
+    80% {
+        transform: translateY(0) scale(1);
+    }
+    90% {
+        transform: translateY(-10px) scale(1);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-logo-fall {
+    animation: logo-fall 1.15s cubic-bezier(0.33, 0, 0.2, 1) both;
+}

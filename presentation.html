@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ensemble pour la République — Présentation</title>
+<style>
+  :root {
+    --primary: #1b5e3a;
+    --primary-dark: #123f27;
+    --secondary: #c99a06;
+    --accent: #b3261e;
+    --bg: #f6f4ee;
+    --surface: #fffdf9;
+    --text: #22281f;
+    --muted: #656b5f;
+    --border: #ded8c8;
+    --rule-green: #1b5e3a;
+    --rule-gold: #c99a06;
+    --rule-red: #b3261e;
+  }
+
+  :root[data-theme="dark"] {
+    --primary: #4caf7d;
+    --primary-dark: #2f7a55;
+    --secondary: #e0b93a;
+    --accent: #e3564c;
+    --bg: #12160f;
+    --surface: #1a2018;
+    --text: #eef1e9;
+    --muted: #9aa593;
+    --border: #303a2b;
+    --rule-green: #4caf7d;
+    --rule-gold: #e0b93a;
+    --rule-red: #e3564c;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --primary: #4caf7d;
+      --primary-dark: #2f7a55;
+      --secondary: #e0b93a;
+      --accent: #e3564c;
+      --bg: #12160f;
+      --surface: #1a2018;
+      --text: #eef1e9;
+      --muted: #9aa593;
+      --border: #303a2b;
+      --rule-green: #4caf7d;
+      --rule-gold: #e0b93a;
+      --rule-red: #e3564c;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 1080px;
+    margin: 2.5rem auto 4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+  }
+
+  header.masthead {
+    background: linear-gradient(160deg, var(--primary-dark), var(--primary));
+    color: #fbfaf5;
+    padding: 2.25rem 2.5rem 1.75rem;
+  }
+
+  .masthead-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .masthead-fr h1 {
+    font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.85rem;
+    letter-spacing: 0.01em;
+    margin: 0 0 0.2rem;
+    text-wrap: balance;
+  }
+
+  .masthead-fr p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(251, 250, 245, 0.78);
+  }
+
+  .masthead-ar {
+    direction: rtl;
+    text-align: right;
+    font-family: "Noto Naskh Arabic", "Traditional Arabic", Tahoma, sans-serif;
+  }
+
+  .masthead-ar h1 {
+    font-weight: 700;
+    font-size: 1.55rem;
+    margin: 0 0 0.25rem;
+  }
+
+  .masthead-ar p {
+    margin: 0;
+    font-size: 1rem;
+    color: rgba(251, 250, 245, 0.78);
+  }
+
+  .tricolor {
+    display: flex;
+    height: 5px;
+    margin-top: 1.5rem;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .tricolor span { flex: 1; }
+  .tricolor span:nth-child(1) { background: var(--rule-green); }
+  .tricolor span:nth-child(2) { background: var(--rule-gold); }
+  .tricolor span:nth-child(3) { background: var(--rule-red); }
+
+  .intro {
+    padding: 1.75rem 2.5rem 0.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0.5rem 0 2rem;
+  }
+
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; }
+    .col-fr { border-inline-end: none !important; }
+  }
+
+  .col {
+    padding: 1.5rem 2.5rem;
+  }
+
+  .col-fr {
+    border-inline-end: 1px solid var(--border);
+  }
+
+  .col-ar {
+    direction: rtl;
+    text-align: right;
+    font-family: "Noto Naskh Arabic", "Traditional Arabic", Tahoma, sans-serif;
+  }
+
+  .col-fr h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0 0 0.6rem;
+  }
+
+  .col-ar h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0 0 0.6rem;
+  }
+
+  .col p.lede {
+    margin: 0 0 1.5rem;
+    max-width: 34ch;
+    color: var(--text);
+  }
+
+  .col-ar p.lede { max-width: 30ch; margin-inline-start: auto; }
+
+  .section-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--secondary);
+    font-weight: 700;
+    margin: 1.5rem 0 0.6rem;
+  }
+
+  .col-ar .section-label { text-transform: none; letter-spacing: 0; font-size: 0.95rem; }
+
+  ul.feature-list {
+    margin: 0 0 0.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul.feature-list li {
+    position: relative;
+    padding-inline-start: 1.15rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.94rem;
+  }
+
+  .col-ar ul.feature-list li { font-size: 1rem; }
+
+  ul.feature-list li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  footer.notes {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2.5rem;
+  }
+
+  @media (max-width: 760px) {
+    footer.notes { grid-template-columns: 1fr; }
+  }
+
+  .note {
+    background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.9rem 1.1rem;
+  }
+
+  .note-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 560px) {
+    .note-pair { grid-template-columns: 1fr; }
+  }
+
+  .note h3 {
+    margin: 0 0 0.3rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--primary);
+  }
+
+  .note.ar {
+    direction: rtl;
+    text-align: right;
+    font-family: "Noto Naskh Arabic", "Traditional Arabic", Tahoma, sans-serif;
+  }
+
+  .note.ar h3 { text-transform: none; letter-spacing: 0; font-size: 0.95rem; }
+
+  .note p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .note.ar p { font-size: 0.95rem; }
+
+  @media print {
+    body { background: #fff; }
+    .sheet { box-shadow: none; border: none; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header class="masthead">
+    <div class="masthead-row">
+      <div class="masthead-fr">
+        <h1>Ensemble pour la République</h1>
+        <p>Plateforme d'adhésion des membres — présentation générale</p>
+      </div>
+      <div class="masthead-ar">
+        <h1>معاً من أجل الجمهورية</h1>
+        <p>منصة انتساب الأعضاء — تقديم عام</p>
+      </div>
+    </div>
+    <div class="tricolor"><span></span><span></span><span></span></div>
+  </header>
+
+  <p class="intro">Un document simple, en français et en arabe · وثيقة مبسطة بالفرنسية والعربية</p>
+
+  <div class="columns">
+    <div class="col col-fr">
+      <h2>Qu'est-ce que c'est ?</h2>
+      <p class="lede">
+        Une application où les citoyens créent un compte, complètent leur dossier
+        et suivent leur demande d'adhésion — et où l'administration reçoit,
+        vérifie et valide ces dossiers.
+      </p>
+
+      <p class="section-label">Pour un membre</p>
+      <ul class="feature-list">
+        <li>Créer un compte avec son téléphone ou son e-mail</li>
+        <li>Compléter son profil : informations personnelles, professionnelles, problématiques</li>
+        <li>Envoyer ses documents (carte d'identité, photo, diplôme...)</li>
+        <li>Soumettre sa demande d'adhésion et suivre son statut</li>
+        <li>Recevoir sa carte de membre numérique avec un code QR une fois validée</li>
+        <li>Recevoir des notifications, même quand l'application est fermée</li>
+        <li>Écrire directement à l'administration en cas de question</li>
+      </ul>
+
+      <p class="section-label">Pour l'administration</p>
+      <ul class="feature-list">
+        <li>Consulter et vérifier les dossiers reçus</li>
+        <li>Valider ou rejeter une demande, avec motif obligatoire en cas de rejet</li>
+        <li>Attribuer automatiquement un matricule unique à chaque membre validé</li>
+        <li>Générer et imprimer les cartes de membre</li>
+        <li>Envoyer des messages à un membre, un groupe ciblé, ou tout le monde</li>
+        <li>Exporter les listes de membres en Excel ou en PDF</li>
+        <li>Consulter des statistiques : inscrits, par wilaya, par secteur...</li>
+      </ul>
+    </div>
+
+    <div class="col col-ar">
+      <h2>ما هي هذه المنصة؟</h2>
+      <p class="lede">
+        تطبيق يُنشئ فيه المواطنون حسابًا، يستكملون ملفهم، ويتابعون طلب
+        انتسابهم — وتتيح فيه للإدارة استقبال هذه الملفات والتحقق منها
+        والمصادقة عليها.
+      </p>
+
+      <p class="section-label">بالنسبة للعضو</p>
+      <ul class="feature-list">
+        <li>إنشاء حساب برقم الهاتف أو البريد الإلكتروني</li>
+        <li>استكمال الملف الشخصي: المعلومات الشخصية، المهنية، والانشغالات</li>
+        <li>إرسال الوثائق المطلوبة (البطاقة الوطنية، الصورة، الشهادة...)</li>
+        <li>إرسال طلب الانتساب وتتبع حالته</li>
+        <li>الحصول على بطاقة العضوية الرقمية مع رمز QR بعد المصادقة عليها</li>
+        <li>استقبال الإشعارات، حتى عندما يكون التطبيق مغلقًا</li>
+        <li>التواصل مباشرة مع الإدارة عند وجود سؤال</li>
+      </ul>
+
+      <p class="section-label">بالنسبة للإدارة</p>
+      <ul class="feature-list">
+        <li>الاطلاع على الملفات الواردة والتحقق منها</li>
+        <li>المصادقة على الطلب أو رفضه، مع ذكر السبب إلزاميًا عند الرفض</li>
+        <li>تخصيص رقم تسلسلي فريد تلقائيًا لكل عضو مقبول</li>
+        <li>إصدار وطباعة بطاقات العضوية</li>
+        <li>إرسال رسائل لعضو واحد، أو مجموعة مستهدفة، أو جميع الأعضاء</li>
+        <li>تصدير قوائم الأعضاء بصيغة Excel أو PDF</li>
+        <li>الاطلاع على الإحصائيات: عدد المسجلين، حسب الولاية، حسب القطاع...</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="notes">
+    <div class="note-pair">
+      <div class="note">
+        <h3>Langues</h3>
+        <p>Le français et l'arabe sont disponibles partout, y compris dès la page de connexion. Chacun choisit sa langue à tout moment.</p>
+      </div>
+      <div class="note ar">
+        <h3>اللغات</h3>
+        <p>الفرنسية والعربية متوفرتان في كل مكان، حتى من صفحة تسجيل الدخول. يمكن لكل شخص اختيار لغته في أي وقت.</p>
+      </div>
+    </div>
+    <div class="note-pair">
+      <div class="note">
+        <h3>Sécurité</h3>
+        <p>Chaque membre ne voit que ses propres informations. Les documents envoyés sont protégés et ne sont accessibles qu'aux personnes autorisées.</p>
+      </div>
+      <div class="note ar">
+        <h3>الأمان</h3>
+        <p>لا يرى كل عضو سوى معلوماته الخاصة. الوثائق المرسلة محمية ولا يمكن الوصول إليها إلا للأشخاص المخوّلين.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -w \"\\\\nHTTP %{http_code}\\\\n\" http://127.0.0.1:8501/login -o /tmp/login501.html)",
+      "Bash(curl -s -o /tmp/appjs801.js -w \"HTTP %{http_code}, size %{size_download} bytes\\\\n\" http://127.0.0.1:8801/build/assets/app-DzTtAYgi.js)",
+      "Bash(node -e \"new Function\\(require\\('fs'\\).readFileSync\\('/tmp/appjs801.js','utf8'\\).replace\\(/^import.*$/gm,''\\).replace\\(/^export.*$/gm,''\\)\\); console.log\\('syntax OK \\(best-effort check\\)'\\)\")",
+      "Bash(taskkill //F //IM php.exe)"
+    ]
+  }
+}
