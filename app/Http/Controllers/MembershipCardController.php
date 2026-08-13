@@ -62,7 +62,7 @@ class MembershipCardController extends Controller
             'logoDataUri' => $this->logoDataUri(),
             'photoDataUri' => $this->photoDataUri($membership),
             'signatureDataUri' => $this->signatureDataUri(),
-        ])->setPaper([0, 0, 292, 184]);
+        ])->setPaper([0, 0, 280, 220]);
 
         return $pdf->download('carte-membre-'.$membership->member_number.'.pdf');
     }

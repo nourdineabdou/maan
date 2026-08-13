@@ -11,12 +11,10 @@
         }
         .card {
             width: 280pt;
-            height: 176pt;
-            margin: 8pt auto;
+            margin: 0;
             border: 2pt solid #1b5e3a;
             border-radius: 12pt;
             box-sizing: border-box;
-            overflow: hidden;
         }
         .header {
             border-bottom: 2pt solid #1b5e3a;
@@ -46,9 +44,17 @@
             color: #6b7280;
         }
         .photo img { width: 60pt; height: 74pt; object-fit: cover; border-radius: 6pt; }
-        .info { padding-left: 10pt; display: table-cell; vertical-align: top; }
+        .info { padding-left: 10pt; display: table-cell; vertical-align: top; width: 180pt; }
         .member-label { font-size: 13pt; font-weight: bold; color: #1b5e3a; text-transform: uppercase; letter-spacing: 1pt; }
-        .name { font-size: 9pt; font-weight: bold; color: #1f2937; margin-top: 2pt; }
+        .name {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #1f2937;
+            margin-top: 2pt;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .matricule-label { font-size: 6.5pt; color: #6b7280; text-transform: uppercase; margin-top: 8pt; }
         .matricule-value { font-size: 14pt; font-weight: bold; color: #1b5e3a; letter-spacing: 1pt; }
         .footer {

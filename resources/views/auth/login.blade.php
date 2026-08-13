@@ -170,13 +170,24 @@
             <label for="password" class="block text-sm font-medium text-text">
                 {{ __('auth.password_label') }}
             </label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >
+            <div class="relative mt-1">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    class="block w-full rounded-lg border border-border px-3 py-2 pe-10 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                >
+                <button
+                    type="button"
+                    id="password-toggle"
+                    tabindex="-1"
+                    class="absolute inset-y-0 end-0 flex w-10 items-center justify-center text-muted hover:text-primary"
+                    aria-label="{{ __('auth.password_label') }}"
+                >
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
         </div>
 
         <div class="flex items-center justify-between text-sm">
@@ -203,6 +214,25 @@
         </a>
     </p>
 @endsection
+
+@push('scripts')
+    <script>
+        (function () {
+            var toggle = document.getElementById('password-toggle');
+            var input = document.getElementById('password');
+
+            if (! toggle || ! input) {
+                return;
+            }
+
+            toggle.addEventListener('click', function () {
+                var isHidden = input.type === 'password';
+                input.type = isHidden ? 'text' : 'password';
+                toggle.querySelector('i').className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+            });
+        })();
+    </script>
+@endpush
 
 @if ($announcement)
     @push('scripts')
