@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Announcement;
 use App\Models\User;
-use App\Services\PublicStatisticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +14,9 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showLoginForm(PublicStatisticsService $statistics): View
+    public function showLoginForm(): View
     {
         return view('auth.login', [
-            'stats' => $statistics->summary(),
             'announcement' => Announcement::where('is_active', true)->with('images')->latest()->first(),
         ]);
     }

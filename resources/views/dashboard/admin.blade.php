@@ -83,4 +83,66 @@
             @endcan
         </div>
     </div>
+
+    @can('statistics.view')
+    <div class="mt-8 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-text">
+            <i class="bi bi-bar-chart-fill text-primary"></i>
+            {{ __('messages.stats_title') }}
+        </h2>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
+                <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-primary/20 to-primary/5 text-lg text-primary">
+                    <i class="bi bi-people-fill"></i>
+                </span>
+                <p class="mt-3 text-3xl font-bold text-primary">{{ $stats['total_members'] }}</p>
+                <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_total_members') }}</p>
+            </div>
+
+            <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
+                <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-secondary/25 to-secondary/5 text-lg text-secondary">
+                    <i class="bi bi-briefcase-fill"></i>
+                </span>
+                <p class="mt-3 text-3xl font-bold text-secondary">{{ $stats['sector_private'] }}</p>
+                <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_sector_private') }}</p>
+            </div>
+
+            <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
+                <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-primary/20 to-primary/5 text-lg text-primary">
+                    <i class="bi bi-bank2"></i>
+                </span>
+                <p class="mt-3 text-3xl font-bold text-primary">{{ $stats['sector_public'] }}</p>
+                <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_sector_public') }}</p>
+            </div>
+
+            <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
+                <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-accent/20 to-accent/5 text-lg text-accent">
+                    <i class="bi bi-person-dash-fill"></i>
+                </span>
+                <p class="mt-3 text-3xl font-bold text-accent">{{ $stats['unemployed'] }}</p>
+                <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_unemployed') }}</p>
+            </div>
+        </div>
+
+        <div class="mt-6 border-t border-border pt-5">
+            <p class="text-xs font-semibold uppercase tracking-wide text-text/70">
+                {{ __('messages.stats_by_region') }}
+            </p>
+
+            @if (count($stats['by_region']) > 0)
+                <ul class="mt-3 space-y-2">
+                    @foreach ($stats['by_region'] as $region)
+                        <li class="flex items-center justify-between rounded-lg bg-background px-3 py-2 text-sm">
+                            <span class="font-medium text-text">{{ $region['name'] }}</span>
+                            <span class="font-bold text-primary">{{ $region['total'] }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="mt-3 text-sm text-muted">{{ __('messages.stats_no_region_data') }}</p>
+            @endif
+        </div>
+    </div>
+    @endcan
 @endsection
