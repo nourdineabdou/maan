@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Api\Member;
 
-use App\Http\Controllers\Controller;
-use App\Services\MembershipDraftService;
-use App\Services\NotificationService;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\MembershipResource;
 use App\Models\MembershipStatusHistory;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use App\Services\MembershipDraftService;
+use App\Services\NotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
-class MyMembershipController extends Controller
+class MembershipController extends ApiController
 {
-    public function show(Request $request, MembershipDraftService $draftService): View
+    public function show(Request $request, MembershipDraftService $draftService): JsonResponse
     {
         $membership = $draftService->draftFor($request->user());
 
-        return view('profile.membership', [
-            'membership' => $membership->load('statusHistories'),
-            'missingFields' => $draftService->missingFieldsFor($request->user()),
+        return response()->json([
+            'data' => MembershipResource::make($membership->load(['problematics', 'documents', 'statusHistories'])),
+            'meta' => ['missing_fields' => $draftService->missingFieldsFor($request->user())],
         ]);
     }
 
-    public function submit(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): RedirectResponse
+    public function submit(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): JsonResponse
     {
         $user = $request->user();
         $membership = $draftService->draftFor($user);
@@ -33,9 +33,10 @@ class MyMembershipController extends Controller
         $missing = $draftService->missingFieldsFor($user);
 
         if ($missing !== []) {
-            return redirect()
-                ->route('profile.membership')
-                ->with('status', __('profile.submit_missing_fields'));
+            return response()->json([
+                'message' => __('profile.submit_missing_fields'),
+                'meta' => ['missing_fields' => $missing],
+            ], 422);
         }
 
         $wasRejected = $membership->isRejected();
@@ -73,8 +74,6 @@ class MyMembershipController extends Controller
             );
         }
 
-        return redirect()
-            ->route('profile.membership')
-            ->with('status', __('profile.flash_submitted'));
+        return response()->json(['data' => MembershipResource::make($membership->refresh())]);
     }
 }

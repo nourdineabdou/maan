@@ -60,7 +60,7 @@
 
         <div class="flex gap-3">
             <a
-                href="{{ route('card.download') }}"
+                href="{{ $downloadUrl }}"
                 class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark"
             >
                 <i class="bi bi-download"></i>

@@ -7,7 +7,23 @@
       "Bash(taskkill //F //IM php.exe)",
       "PowerShell(Get-Command php -ErrorAction SilentlyContinue)",
       "Read(//mingw64/**)",
-      "Read(//usr/**)"
+      "Read(//usr/**)",
+      "Bash(composer --version)",
+      "PowerShell(Get-Command composer -ErrorAction SilentlyContinue)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://ensemble-republique.test/api/v1/geo/regions)",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/geo/regions)",
+      "Bash(curl -s -X POST http://ensemble-republique.test/api/v1/auth/login -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"identifier\":\"membre@ensemble-republique.test\",\"password\":\"password\"}')",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/auth/me -H 'Authorization: Bearer 1|QHL7IiIyaCqGE7Bhq3poC6ssCvx3PblbPqdMmv7ca83d3f86' -H 'Accept: application/json')",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/me/membership -H 'Authorization: Bearer 1|QHL7IiIyaCqGE7Bhq3poC6ssCvx3PblbPqdMmv7ca83d3f86' -H 'Accept: application/json')",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/dashboard -H 'Authorization: Bearer 1|QHL7IiIyaCqGE7Bhq3poC6ssCvx3PblbPqdMmv7ca83d3f86' -H 'Accept: application/json')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://ensemble-republique.test/api/v1/me/profile -H \"Accept: application/json\")",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/me/card -H 'Authorization: Bearer 1|QHL7IiIyaCqGE7Bhq3poC6ssCvx3PblbPqdMmv7ca83d3f86' -H 'Accept: application/json')",
+      "Bash(curl -s -o /dev/null -w 'HTTP %{http_code}\\\\n' http://ensemble-republique.test/api/v1/admin/members -H 'Authorization: Bearer 1|QHL7IiIyaCqGE7Bhq3poC6ssCvx3PblbPqdMmv7ca83d3f86' -H 'Accept: application/json')",
+      "Bash(curl -s -X POST http://ensemble-republique.test/api/v1/auth/login -H \"Content-Type: application/json\" -H \"Accept: application/json\" -d '{\"identifier\":\"\",\"password\":\"\"}')",
+      "Bash(curl -s http://ensemble-republique.test/api/v1/public/membership/verify/RlV9RYLKUSm6gpAD71M8zgekDZzLupTFR7qmyVF9 -H 'Accept: application/json')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" -X POST http://ensemble-republique.test/api/v1/auth/register -H \"Accept: application/json\" -F \"name=Test User\")",
+      "Bash(curl -s \"http://ensemble-republique.test/api/v1/geo/regions\" -H \"X-Locale: ar\")",
+      "Bash(curl -s -X POST http://ensemble-republique.test/api/v1/auth/login -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"identifier\":\"admin@ensemble-republique.test\",\"password\":\"1234\"}')"
     ]
   }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Membership;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ class MembershipCardController extends Controller
 {
     public function show(Request $request): View|RedirectResponse
     {
-        return $this->renderCard($request->user()->latestMembership);
+        return $this->renderCard($request->user()->latestMembership, route('card.download'));
     }
 
     public function download(Request $request)
@@ -26,7 +27,7 @@ class MembershipCardController extends Controller
     {
         abort_unless($request->user()->can('cards.print'), 403);
 
-        return $this->renderCard($membership);
+        return $this->renderCard($membership, route('admin.members.card.pdf', $membership));
     }
 
     public function downloadForAdmin(Request $request, Membership $membership)
@@ -36,7 +37,41 @@ class MembershipCardController extends Controller
         return $this->renderPdf($membership);
     }
 
-    private function renderCard(?Membership $membership): View|RedirectResponse
+    public function showJson(Request $request): JsonResponse
+    {
+        return $this->cardJson($request->user()->latestMembership);
+    }
+
+    public function showJsonForAdmin(Request $request, Membership $membership): JsonResponse
+    {
+        abort_unless($request->user()->can('cards.print'), 403);
+
+        return $this->cardJson($membership);
+    }
+
+    private function cardJson(?Membership $membership): JsonResponse
+    {
+        if (! $this->isCardAvailable($membership)) {
+            return response()->json(['message' => __('card.not_available')], 404);
+        }
+
+        $membership->load('user.profile.region');
+
+        return response()->json([
+            'data' => [
+                'member_number' => $membership->member_number,
+                'full_name' => $membership->user->profile?->full_name ?? $membership->user->display_name,
+                'photo_url' => $membership->user->profile?->photo_url,
+                'card_generated_at' => $membership->card_generated_at,
+                'verify_url' => route('membership.verify', $membership->qr_token),
+                'download_pdf_url' => $membership->user_id === request()->user()?->id
+                    ? route('api.me.card.pdf')
+                    : route('api.admin.memberships.card.pdf', $membership),
+            ],
+        ]);
+    }
+
+    private function renderCard(?Membership $membership, string $downloadUrl): View|RedirectResponse
     {
         if (! $this->isCardAvailable($membership)) {
             return redirect()
@@ -47,6 +82,7 @@ class MembershipCardController extends Controller
         return view('cards.member-card', [
             'membership' => $membership->load('user.profile.region'),
             'qrDataUri' => $this->qrDataUri($membership),
+            'downloadUrl' => $downloadUrl,
         ]);
     }
 
