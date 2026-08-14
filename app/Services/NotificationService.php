@@ -28,7 +28,7 @@ class NotificationService
     ): Notification {
         $recipients = collect($recipients);
 
-        $notification = DB::transaction(function () use ($recipients, $title, $message, $sender, $actionUrl, $campaign) {
+        [$notification, $recipientIds] = DB::transaction(function () use ($recipients, $title, $message, $sender, $actionUrl, $campaign) {
             $notification = Notification::create([
                 'type' => $campaign ? 'campaign_message' : 'system',
                 'title' => $title,
@@ -38,20 +38,22 @@ class NotificationService
                 'created_by' => $sender->id,
             ]);
 
+            $recipientIds = [];
+
             foreach ($recipients as $recipient) {
-                NotificationRecipient::create([
+                $recipientIds[$recipient->id] = NotificationRecipient::create([
                     'notification_id' => $notification->id,
                     'user_id' => $recipient->id,
                     'channel' => 'internal',
                     'status' => 'sent',
                     'delivered_at' => now(),
-                ]);
+                ])->id;
             }
 
-            return $notification;
+            return [$notification, $recipientIds];
         });
 
-        $this->sendPush($recipients, $title, $message, $actionUrl);
+        $this->sendPush($recipients, $title, $message, $actionUrl, $recipientIds);
 
         return $notification;
     }
@@ -63,8 +65,9 @@ class NotificationService
      * la notification interne.
      *
      * @param  \Illuminate\Support\Collection<int, User>  $recipients
+     * @param  array<int, int>  $recipientIds  NotificationRecipient::id indexé par user_id
      */
-    private function sendPush(\Illuminate\Support\Collection $recipients, array $title, array $message, ?string $actionUrl): void
+    private function sendPush(\Illuminate\Support\Collection $recipients, array $title, array $message, ?string $actionUrl, array $recipientIds = []): void
     {
         foreach ($recipients as $recipient) {
             $locale = $recipient->preferred_locale ?? 'fr';
@@ -74,6 +77,7 @@ class NotificationService
                     title: $title[$locale] ?? reset($title),
                     body: $message[$locale] ?? reset($message),
                     url: $actionUrl,
+                    notificationRecipientId: $recipientIds[$recipient->id] ?? null,
                 ));
             } catch (\Throwable $e) {
                 Log::warning('Échec de l\'envoi de la notification push.', [

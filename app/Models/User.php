@@ -66,6 +66,22 @@ class User extends Authenticatable
         return $this->hasMany(NotificationRecipient::class);
     }
 
+    public function expoPushTokens(): HasMany
+    {
+        return $this->hasMany(ExpoPushToken::class);
+    }
+
+    /**
+     * Routage du canal ExpoPushChannel (app mobile), suivant la même
+     * convention que routeNotificationForWebPush() du trait vendor.
+     *
+     * @return array<int, string>
+     */
+    public function routeNotificationForExpoPush(): array
+    {
+        return $this->expoPushTokens()->pluck('token')->all();
+    }
+
     public function unreadNotificationsCount(): int
     {
         return $this->notificationRecipients()->whereNull('read_at')->count();

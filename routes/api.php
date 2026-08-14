@@ -69,6 +69,8 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/push/subscribe', [PushSubscriptionController::class, 'subscribe']);
         Route::post('/push/unsubscribe', [PushSubscriptionController::class, 'unsubscribe']);
+        Route::post('/push/register-device', [PushSubscriptionController::class, 'registerDevice']);
+        Route::post('/push/unregister-device', [PushSubscriptionController::class, 'unregisterDevice']);
 
         Route::get('/me/profile', [ProfileController::class, 'show']);
         Route::put('/me/profile/personal', [ProfileController::class, 'updatePersonal']);
