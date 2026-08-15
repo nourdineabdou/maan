@@ -64,11 +64,20 @@ class NotificationService
      * abonnement push, ou une erreur réseau, ne doit pas casser l'envoi de
      * la notification interne.
      *
+     * La notification interne (cloche dans l'app) reste, elle, toujours
+     * créée quel que soit ce réglage — seul l'envoi push (fonctionnalité
+     * activable via PUSH_NOTIFICATIONS_ENABLED dans .env, pas depuis le
+     * dashboard admin) est court-circuité ici.
+     *
      * @param  \Illuminate\Support\Collection<int, User>  $recipients
      * @param  array<int, int>  $recipientIds  NotificationRecipient::id indexé par user_id
      */
     private function sendPush(\Illuminate\Support\Collection $recipients, array $title, array $message, ?string $actionUrl, array $recipientIds = []): void
     {
+        if (! config('push.enabled')) {
+            return;
+        }
+
         foreach ($recipients as $recipient) {
             $locale = $recipient->preferred_locale ?? 'fr';
 
