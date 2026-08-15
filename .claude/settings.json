@@ -23,7 +23,16 @@
       "Bash(curl -s http://ensemble-republique.test/api/v1/public/membership/verify/RlV9RYLKUSm6gpAD71M8zgekDZzLupTFR7qmyVF9 -H 'Accept: application/json')",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" -X POST http://ensemble-republique.test/api/v1/auth/register -H \"Accept: application/json\" -F \"name=Test User\")",
       "Bash(curl -s \"http://ensemble-republique.test/api/v1/geo/regions\" -H \"X-Locale: ar\")",
-      "Bash(curl -s -X POST http://ensemble-republique.test/api/v1/auth/login -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"identifier\":\"admin@ensemble-republique.test\",\"password\":\"1234\"}')"
+      "Bash(curl -s -X POST http://ensemble-republique.test/api/v1/auth/login -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"identifier\":\"admin@ensemble-republique.test\",\"password\":\"1234\"}')",
+      "WebSearch",
+      "WebFetch(domain:omaralalwi.github.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(grep -c \"Mpdf\\\\\\\\\\\\\\\\Mpdf\" /c/laragon/www/ensemble-republique/vendor/composer/autoload_static.php)",
+      "Bash(curl -s -b /tmp/member_cookies3.txt \"http://ensemble-republique.test/card/pdf\" -o /c/laragon/www/ensemble-republique/storage/app/tmp/card-fr.pdf -D - -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/dashboard\" -o /tmp/dash2.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/lang/fr\" -o /dev/null -w \"switch: %{http_code}\\\\n\")",
+      "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/dashboard\" -o /tmp/dash3.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://ensemble-republique.test/api/v1/public/statistics\" -H \"Accept: application/json\")"
     ]
   }
 }

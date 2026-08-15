@@ -39,6 +39,7 @@ return [
     'stats_by_region' => 'التوزيع الجغرافي',
     'stats_sector_private' => 'القطاع الخاص',
     'stats_sector_public' => 'القطاع العام',
+    'stats_sector_informal' => 'القطاع غير الرسمي',
     'stats_sector_other' => 'قطاع آخر',
     'stats_unemployed' => 'عاطلون عن العمل',
     'stats_no_region_data' => 'لا توجد بيانات جغرافية حتى الآن.',

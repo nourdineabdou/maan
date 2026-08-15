@@ -3,22 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Membership;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MembershipCardController extends Controller
 {
+    /** Taille d'affichage du QR code sur la carte PDF, en points. */
+    private const QR_SIZE_PT = 56;
+
     public function show(Request $request): View|RedirectResponse
     {
         return $this->renderCard($request->user()->latestMembership, route('card.download'));
     }
 
-    public function download(Request $request)
+    public function download(Request $request): Response
     {
         return $this->renderPdf($request->user()->latestMembership);
     }
@@ -30,7 +35,7 @@ class MembershipCardController extends Controller
         return $this->renderCard($membership, route('admin.members.card.pdf', $membership));
     }
 
-    public function downloadForAdmin(Request $request, Membership $membership)
+    public function downloadForAdmin(Request $request, Membership $membership): Response
     {
         abort_unless($request->user()->can('cards.print'), 403);
 
@@ -86,21 +91,63 @@ class MembershipCardController extends Controller
         ]);
     }
 
-    private function renderPdf(?Membership $membership)
+    /**
+     * Générée avec mPDF plutôt que dompdf : contrairement à dompdf, mPDF
+     * gère nativement la mise en forme du texte arabe (lettres liées selon
+     * leur position, ordre de lecture RTL) sans quoi les caractères arabes
+     * s'affichaient déconnectés et dans le désordre sur la carte en PDF.
+     */
+    private function renderPdf(?Membership $membership): Response
     {
         if (! $this->isCardAvailable($membership)) {
             abort(404);
         }
 
-        $pdf = Pdf::loadView('cards.pdf', [
+        $html = view('cards.pdf', [
             'membership' => $membership->load('user.profile.region'),
             'qrDataUri' => $this->qrDataUri($membership),
+            'qrSize' => self::QR_SIZE_PT,
             'logoDataUri' => $this->logoDataUri(),
             'photoDataUri' => $this->photoDataUri($membership),
             'signatureDataUri' => $this->signatureDataUri(),
-        ])->setPaper([0, 0, 280, 220]);
+        ])->render();
 
-        return $pdf->download('carte-membre-'.$membership->member_number.'.pdf');
+        $mpdf = new Mpdf([
+            'format' => [$this->ptToMm(280), $this->ptToMm(270)],
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            // Sélectionne automatiquement une police adaptée à chaque script
+            // détecté (latin, arabe...) plutôt qu'une seule police pour tout
+            // le document.
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+        ]);
+
+        if (app()->getLocale() === 'ar') {
+            $mpdf->SetDirectionality('rtl');
+        }
+
+        $mpdf->WriteHTML($html);
+
+        $filename = 'carte-membre-'.$membership->member_number.'.pdf';
+
+        return response(
+            $mpdf->Output($filename, Destination::STRING_RETURN),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            ]
+        );
+    }
+
+    private function ptToMm(float $points): float
+    {
+        return $points * 25.4 / 72;
     }
 
     private function isCardAvailable(?Membership $membership): bool
@@ -111,11 +158,17 @@ class MembershipCardController extends Controller
             && $membership->card_is_active;
     }
 
+    /**
+     * Généré directement à la taille d'affichage finale (contrairement à
+     * un gros SVG redimensionné en CSS) : mPDF se base sur les attributs
+     * width/height intrinsèques du SVG plutôt que sur le CSS, un QR généré
+     * à 160px s'affichait donc bien plus grand que prévu sur la carte.
+     */
     private function qrDataUri(Membership $membership): string
     {
         $url = route('membership.verify', $membership->qr_token);
 
-        $svg = QrCode::size(160)->format('svg')->generate($url);
+        $svg = QrCode::size(self::QR_SIZE_PT)->format('svg')->generate($url);
 
         return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
@@ -129,7 +182,7 @@ class MembershipCardController extends Controller
             return '';
         }
 
-        return 'data:image/png;base64,'.base64_encode(file_get_contents($path));
+        return $this->resizedImageDataUri(file_get_contents($path), 120);
     }
 
     private function signatureDataUri(): ?string
@@ -140,7 +193,7 @@ class MembershipCardController extends Controller
             return null;
         }
 
-        return 'data:image/png;base64,'.base64_encode(file_get_contents($path));
+        return $this->resizedImageDataUri(file_get_contents($path), 200);
     }
 
     private function photoDataUri(Membership $membership): ?string
@@ -151,9 +204,52 @@ class MembershipCardController extends Controller
             return null;
         }
 
-        $mime = Storage::disk('public')->mimeType($photoPath) ?: 'image/jpeg';
-        $contents = Storage::disk('public')->get($photoPath);
+        return $this->resizedImageDataUri(Storage::disk('public')->get($photoPath), 200);
+    }
 
-        return "data:{$mime};base64,".base64_encode($contents);
+    /**
+     * Redimensionne une image avant de l'embarquer en base64 dans le HTML
+     * du PDF. Les photos de profil et le logo sont affichés en tout petit
+     * sur la carte (quelques dizaines de points) mais peuvent peser
+     * plusieurs Mo en taille d'origine ; les embarquer telles quelles fait
+     * exploser la taille du HTML généré, ce que mPDF refuse de traiter
+     * (« pcre.backtrack_limit » dépassé) au-delà d'une certaine taille.
+     */
+    private function resizedImageDataUri(string $contents, int $maxDimension): string
+    {
+        $source = @imagecreatefromstring($contents);
+
+        if ($source === false) {
+            return 'data:image/png;base64,'.base64_encode($contents);
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        $scale = min(1, $maxDimension / max($width, $height));
+
+        if ($scale >= 1) {
+            imagedestroy($source);
+
+            return 'data:image/png;base64,'.base64_encode($contents);
+        }
+
+        $newWidth = max(1, (int) round($width * $scale));
+        $newHeight = max(1, (int) round($height * $scale));
+
+        $resized = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($resized, false);
+        imagesavealpha($resized, true);
+        $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
+        imagefill($resized, 0, 0, $transparent);
+
+        imagecopyresampled($resized, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        imagedestroy($source);
+
+        ob_start();
+        imagepng($resized, null, 6);
+        $data = ob_get_clean();
+        imagedestroy($resized);
+
+        return 'data:image/png;base64,'.base64_encode($data);
     }
 }

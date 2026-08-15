@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Admin\MoughataaController as AdminMoughataaControll
 use App\Http\Controllers\Api\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Api\Admin\ProblematicController as AdminProblematicController;
 use App\Http\Controllers\Api\Admin\RegionController as AdminRegionController;
+use App\Http\Controllers\Api\Admin\StatisticsController as AdminStatisticsController;
 use App\Http\Controllers\Api\Admin\SupportController as AdminSupportController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\DashboardController;
@@ -54,7 +55,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/geo/moughataas', [GeoController::class, 'moughataas']);
     Route::get('/geo/communes', [GeoController::class, 'communes']);
 
-    Route::get('/public/statistics', [PublicController::class, 'statistics']);
     Route::get('/public/announcement/active', [PublicController::class, 'activeAnnouncement']);
     Route::get('/public/membership/verify/{token}', [PublicController::class, 'verifyMembership']);
 
@@ -103,6 +103,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/me/support/{message}/reply', [MemberSupportController::class, 'reply']);
 
         Route::prefix('admin')->group(function () {
+            Route::get('/statistics', [AdminStatisticsController::class, 'index']);
+
             Route::get('/members', [AdminMemberController::class, 'index']);
 
             Route::get('/memberships', [AdminMembershipController::class, 'index']);
@@ -155,6 +157,8 @@ Route::prefix('v1')->group(function () {
 
             Route::get('/exports/excel', [AdminExportController::class, 'excel']);
             Route::get('/exports/pdf', [AdminExportController::class, 'pdf']);
+
+            Route::get('/statistics', [AdminStatisticsController::class, 'index']);
         });
     });
 });

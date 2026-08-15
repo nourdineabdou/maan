@@ -30,6 +30,10 @@ class MembershipController extends ApiController
             $query->whereHas('user.profile', fn ($q) => $q->where('region_id', $regionId));
         }
 
+        if ($request->boolean('has_population_need')) {
+            $query->whereNotNull('population_needs')->where('population_needs', '!=', '');
+        }
+
         if ($search = $request->string('q')->toString()) {
             $query->where(function ($q) use ($search) {
                 $q->where('registration_number', 'like', "%{$search}%")

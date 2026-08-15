@@ -7,7 +7,6 @@ use App\Http\Resources\RegionResource;
 use App\Models\Announcement;
 use App\Models\Membership;
 use App\Models\Region;
-use App\Services\PublicStatisticsService;
 use Illuminate\Http\JsonResponse;
 
 class PublicController extends ApiController
@@ -19,11 +18,6 @@ class PublicController extends ApiController
                 Region::where('is_active', true)->orderBy('display_order')->get()
             ),
         ]);
-    }
-
-    public function statistics(PublicStatisticsService $statistics): JsonResponse
-    {
-        return response()->json(['data' => $statistics->summary()]);
     }
 
     public function activeAnnouncement(): JsonResponse

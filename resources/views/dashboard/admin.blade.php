@@ -91,7 +91,7 @@
             {{ __('messages.stats_title') }}
         </h2>
 
-        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
                 <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-primary/20 to-primary/5 text-lg text-primary">
                     <i class="bi bi-people-fill"></i>
@@ -114,6 +114,14 @@
                 </span>
                 <p class="mt-3 text-3xl font-bold text-primary">{{ $stats['sector_public'] }}</p>
                 <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_sector_public') }}</p>
+            </div>
+
+            <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">
+                <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-muted/25 to-muted/5 text-lg text-muted">
+                    <i class="bi bi-shop"></i>
+                </span>
+                <p class="mt-3 text-3xl font-bold text-text">{{ $stats['sector_informal'] }}</p>
+                <p class="mt-1 text-sm font-medium text-text/70">{{ __('messages.stats_sector_informal') }}</p>
             </div>
 
             <div class="rounded-xl border border-border bg-background p-4 text-center shadow-sm">

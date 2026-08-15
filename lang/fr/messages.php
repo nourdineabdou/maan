@@ -39,6 +39,7 @@ return [
     'stats_by_region' => 'Répartition géographique',
     'stats_sector_private' => 'Secteur privé',
     'stats_sector_public' => 'Secteur public',
+    'stats_sector_informal' => 'Secteur informel',
     'stats_sector_other' => 'Autre secteur',
     'stats_unemployed' => 'Au chômage',
     'stats_no_region_data' => 'Aucune donnée géographique pour le moment.',

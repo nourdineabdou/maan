@@ -16,6 +16,7 @@ class PublicStatisticsService
      *     by_region: array<int, array{name: string, total: int}>,
      *     sector_private: int,
      *     sector_public: int,
+     *     sector_informal: int,
      *     sector_other: int,
      *     unemployed: int,
      * }
@@ -46,8 +47,11 @@ class PublicStatisticsService
         $sectorPublic = MemberProfile::where('employment_status', 'employed')
             ->where('employment_sector', 'public')->count();
 
+        $sectorInformal = MemberProfile::where('employment_status', 'employed')
+            ->where('employment_sector', 'informal')->count();
+
         $sectorOther = MemberProfile::where('employment_status', 'employed')
-            ->whereNotIn('employment_sector', ['private', 'public'])->count();
+            ->whereNotIn('employment_sector', ['private', 'public', 'informal'])->count();
 
         $unemployed = MemberProfile::where('employment_status', 'unemployed')->count();
 
@@ -56,6 +60,7 @@ class PublicStatisticsService
             'by_region' => $byRegion,
             'sector_private' => $sectorPrivate,
             'sector_public' => $sectorPublic,
+            'sector_informal' => $sectorInformal,
             'sector_other' => $sectorOther,
             'unemployed' => $unemployed,
         ];
