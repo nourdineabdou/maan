@@ -64,15 +64,23 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .matricule-label { font-size: 7.5pt; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4pt; margin-top: 9pt; }
-        .matricule-value { font-size: 15pt; font-weight: bold; color: #1b5e3a; letter-spacing: 0.6pt; }
+        .matricule-value { font-size: 15pt; font-weight: bold; color: #1b5e3a; letter-spacing: 0.6pt; margin-top: 9pt; }
         .footer {
             border-top: 1.5pt solid #1b5e3a;
             padding: 12pt;
         }
         .footer table { width: 100%; }
+        {{--
+            mPDF inverse l'ordre des colonnes du tableau quand le document est
+            RTL (colonne "qr" ci-dessous affichée à droite, "sign-col" à
+            gauche) mais ne touche pas au text-align de leur contenu : sans ce
+            sens explicite, la signature restait alignée à droite de sa
+            propre cellule, donc collée au centre de la carte plutôt qu'au
+            vrai bord gauche.
+        --}}
+        .footer .qr { text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; }
         .footer .qr img { display: block; }
-        .sign-col { text-align: right; vertical-align: bottom; }
+        .sign-col { text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; vertical-align: bottom; }
         .sign-line { border-bottom: 0.75pt solid #6b7280; width: 72pt; height: 18pt; display: inline-block; }
         .sign-image { height: 24pt; width: auto; max-width: 72pt; display: inline-block; }
         .signature-label { display: block; margin-top: 3pt; font-size: 7.5pt; color: #6b7280; }
@@ -101,7 +109,6 @@
                     <td class="info">
                         <div class="member-label">{{ __('card.member_label') }}</div>
                         <div class="name">{{ $profile?->full_name ?? $membership->user->name }}</div>
-                        <div class="matricule-label">{{ __('card.matricule_label') }}</div>
                         <div class="matricule-value">{{ $membership->member_number }}</div>
                     </td>
                 </tr>

@@ -120,7 +120,7 @@ class MembershipCardController extends Controller
         ])->render();
 
         $mpdf = new Mpdf([
-            'format' => [$this->ptToMm(self::CARD_WIDTH_PT), $this->ptToMm(244)],
+            'format' => [$this->ptToMm(self::CARD_WIDTH_PT), $this->measureContentHeightMm($html)],
             'margin_left' => 0,
             'margin_right' => 0,
             'margin_top' => 0,
@@ -152,6 +152,37 @@ class MembershipCardController extends Controller
         );
     }
 
+    /**
+     * mPDF ne propose pas de hauteur de page "automatique" : avec une hauteur
+     * fixe devinée à l'avance, un nom un peu long ou une photo/signature qui
+     * gonfle une ligne pouvait pousser le bas de la carte sur une 2e page
+     * (quasi vide). On mesure donc la hauteur réellement occupée par le
+     * rendu sur une page volontairement très haute, pour générer ensuite la
+     * vraie carte à une hauteur qui lui correspond exactement.
+     */
+    private function measureContentHeightMm(string $html): float
+    {
+        $probe = new Mpdf([
+            'format' => [$this->ptToMm(self::CARD_WIDTH_PT), 1000],
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+        ]);
+
+        if (app()->getLocale() === 'ar') {
+            $probe->SetDirectionality('rtl');
+        }
+
+        $probe->WriteHTML($html);
+
+        return $probe->y + 2;
+    }
+
     private function ptToMm(float $points): float
     {
         return $points * 25.4 / 72;
@@ -180,6 +211,15 @@ class MembershipCardController extends Controller
         return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
 
+    /**
+     * logo_fr.png/logo_ar.png sont le logo institutionnel complet (emblème
+     * circulaire + nom de la plateforme en dessous, sur fond transparent),
+     * pensés pour un usage en pleine largeur — pas pour l'avatar rond de
+     * l'en-tête de la carte. Sans ce recadrage, écraser ces ~1536×1024px
+     * dans un cercle de 30pt déforme l'emblème et rend le texte en dessous
+     * illisible. On isole donc d'abord le carré contenant l'emblème avant
+     * de le redimensionner.
+     */
     private function logoDataUri(): string
     {
         $filename = app()->getLocale() === 'ar' ? 'logo_ar.png' : 'logo_fr.png';
@@ -189,7 +229,39 @@ class MembershipCardController extends Controller
             return '';
         }
 
-        return $this->resizedImageDataUri(file_get_contents($path), 120);
+        return $this->resizedImageDataUri($this->cropLogoEmblem(file_get_contents($path)), 120);
+    }
+
+    private function cropLogoEmblem(string $contents): string
+    {
+        $source = @imagecreatefromstring($contents);
+
+        if ($source === false) {
+            return $contents;
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        // L'emblème occupe environ les 3/5 supérieurs du canevas (le reste
+        // étant le nom de la plateforme sous le cercle) — ratio vérifié sur
+        // logo_fr.png/logo_ar.png, pas une valeur générique.
+        $side = (int) round($height * 0.6);
+        $x = (int) round(($width - $side) / 2);
+
+        $crop = imagecreatetruecolor($side, $side);
+        imagealphablending($crop, false);
+        imagesavealpha($crop, true);
+        $transparent = imagecolorallocatealpha($crop, 0, 0, 0, 127);
+        imagefill($crop, 0, 0, $transparent);
+        imagecopy($crop, $source, 0, 0, $x, 0, $side, $side);
+        imagedestroy($source);
+
+        ob_start();
+        imagepng($crop, null, 6);
+        $data = ob_get_clean();
+        imagedestroy($crop);
+
+        return $data;
     }
 
     private function signatureDataUri(): ?string

@@ -43,7 +43,8 @@
       "Bash(echo \"TYPECHECK_DONE_EXIT=$?\")",
       "Bash(unlink \"c:/laragon/www/ensemble-republique/storage/app/need-page.html\")",
       "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan tinker --execute=\" *)",
-      "Bash(node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json)"
+      "Bash(node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -l \"c:/laragon/www/ensemble-republique/app/Http/Controllers/MembershipCardController.php\")"
     ],
     "additionalDirectories": [
       "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp"
