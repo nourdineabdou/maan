@@ -210,15 +210,25 @@
                                     'high' => 'bg-secondary/20 text-secondary',
                                     default => 'bg-border text-muted',
                                 };
+                                $statusClass = match ($problematic->pivot->status) {
+                                    'resolved' => 'bg-primary-light text-primary',
+                                    'in_progress' => 'bg-secondary/20 text-secondary',
+                                    default => 'bg-border text-muted',
+                                };
                             @endphp
                             <li class="rounded-lg border border-border px-3 py-2">
                                 <div class="flex items-center justify-between gap-2">
                                     <p class="font-medium text-text">{{ $problematic->getTranslation('name') }}</p>
-                                    @if ($problematic->pivot->priority)
-                                        <span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold {{ $priorityClass }}">
-                                            {{ __('forms.priority_'.$problematic->pivot->priority) }}
+                                    <div class="flex shrink-0 items-center gap-2">
+                                        <span class="rounded-full px-2 py-0.5 text-xs font-semibold {{ $statusClass }}">
+                                            {{ __('forms.status_'.$problematic->pivot->status) }}
                                         </span>
-                                    @endif
+                                        @if ($problematic->pivot->priority)
+                                            <span class="rounded-full px-2 py-0.5 text-xs font-semibold {{ $priorityClass }}">
+                                                {{ __('forms.priority_'.$problematic->pivot->priority) }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 @if ($problematic->pivot->description)
@@ -241,6 +251,54 @@
                                         {{ $problematic->pivot->locality }}
                                     </p>
                                 @endif
+
+                                <div class="mt-2 flex flex-wrap items-center gap-3">
+                                    @can('problematics.manage')
+                                        <form method="POST" action="{{ route('admin.memberships.problematics.status', [$membership, $problematic]) }}" class="flex items-center gap-2">
+                                            @csrf
+                                            <select name="status" onchange="this.form.submit()" class="rounded-lg border border-border px-2 py-1 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                                @foreach (['submitted', 'in_progress', 'resolved'] as $status)
+                                                    <option value="{{ $status }}" @selected($problematic->pivot->status === $status)>
+                                                        {{ __('forms.status_'.$status) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    @endcan
+                                    @can('support_messages.manage')
+                                        <button
+                                            type="button" class="declaration-discuss text-xs font-medium text-primary hover:underline"
+                                            data-related-type="problematic" data-related-id="{{ $problematic->pivot->id }}"
+                                            data-related-label="{{ $problematic->getTranslation('name') }}"
+                                        >
+                                            <i class="bi bi-chat-dots"></i> {{ __('support.contact_about_button') }}
+                                        </button>
+                                    @endcan
+                                </div>
+
+                                @if ($problematic->pivot->documents->isNotEmpty())
+                                    <ul class="mt-2 space-y-1 border-t border-border pt-2">
+                                        @foreach ($problematic->pivot->documents as $document)
+                                            <li class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                                <span class="text-text">{{ $document->title ?: $document->original_name }}</span>
+                                                <div class="flex items-center gap-3">
+                                                    <a href="{{ $document->file_url }}" target="_blank" class="font-medium text-primary hover:underline">
+                                                        {{ __('documents.view') }}
+                                                    </a>
+                                                    <a href="{{ route('admin.documents.download', $document) }}" class="font-medium text-primary hover:underline">
+                                                        {{ __('documents.download') }}
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <a
+                                        href="{{ route('admin.memberships.problematics.documents.zip', [$membership, $problematic]) }}"
+                                        class="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+                                    >
+                                        <i class="bi bi-file-earmark-zip"></i> {{ __('documents.download_all_zip') }}
+                                    </a>
+                                @endif
                             </li>
                         @endforeach
                     </ul>
@@ -250,27 +308,73 @@
             <div class="rounded-2xl border border-border bg-surface p-5">
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('memberships.section_population_need') }}</h2>
 
-                @if ($membership->population_needs)
-                    <p class="mt-3 whitespace-pre-line text-sm text-text">{{ $membership->population_needs }}</p>
-                @else
+                @if ($membership->needs->isEmpty())
                     <p class="mt-3 text-sm text-muted">{{ __('memberships.no_population_need') }}</p>
-                @endif
-
-                @php $needDocuments = $membership->documents->where('document_type', 'need_justification'); @endphp
-
-                @if ($needDocuments->isNotEmpty())
-                    <ul class="mt-3 space-y-2 text-sm">
-                        @foreach ($needDocuments as $document)
-                            <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2">
-                                <span class="text-text">{{ $document->title ?: $document->original_name }}</span>
-                                <div class="flex items-center gap-3">
-                                    <a href="{{ $document->file_url }}" target="_blank" class="font-medium text-primary hover:underline">
-                                        {{ __('documents.view') }}
-                                    </a>
-                                    <a href="{{ route('admin.documents.download', $document) }}" class="font-medium text-primary hover:underline">
-                                        {{ __('documents.download') }}
-                                    </a>
+                @else
+                    <ul class="mt-3 space-y-3 text-sm">
+                        @foreach ($membership->needs as $need)
+                            @php
+                                $statusClass = match ($need->status) {
+                                    'resolved' => 'bg-primary-light text-primary',
+                                    'in_progress' => 'bg-secondary/20 text-secondary',
+                                    default => 'bg-border text-muted',
+                                };
+                            @endphp
+                            <li class="rounded-lg border border-border px-3 py-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="whitespace-pre-line text-text">{{ $need->description }}</p>
+                                    <span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold {{ $statusClass }}">
+                                        {{ __('forms.status_'.$need->status) }}
+                                    </span>
                                 </div>
+
+                                <div class="mt-2 flex flex-wrap items-center gap-3">
+                                    @can('problematics.manage')
+                                        <form method="POST" action="{{ route('admin.memberships.needs.status', [$membership, $need]) }}" class="flex items-center gap-2">
+                                            @csrf
+                                            <select name="status" onchange="this.form.submit()" class="rounded-lg border border-border px-2 py-1 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                                @foreach (['submitted', 'in_progress', 'resolved'] as $status)
+                                                    <option value="{{ $status }}" @selected($need->status === $status)>
+                                                        {{ __('forms.status_'.$status) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    @endcan
+                                    @can('support_messages.manage')
+                                        <button
+                                            type="button" class="declaration-discuss text-xs font-medium text-primary hover:underline"
+                                            data-related-type="need" data-related-id="{{ $need->id }}"
+                                            data-related-label="{{ str($need->description)->limit(40) }}"
+                                        >
+                                            <i class="bi bi-chat-dots"></i> {{ __('support.contact_about_button') }}
+                                        </button>
+                                    @endcan
+                                </div>
+
+                                @if ($need->documents->isNotEmpty())
+                                    <ul class="mt-2 space-y-1 border-t border-border pt-2">
+                                        @foreach ($need->documents as $document)
+                                            <li class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                                <span class="text-text">{{ $document->title ?: $document->original_name }}</span>
+                                                <div class="flex items-center gap-3">
+                                                    <a href="{{ $document->file_url }}" target="_blank" class="font-medium text-primary hover:underline">
+                                                        {{ __('documents.view') }}
+                                                    </a>
+                                                    <a href="{{ route('admin.documents.download', $document) }}" class="font-medium text-primary hover:underline">
+                                                        {{ __('documents.download') }}
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <a
+                                        href="{{ route('admin.memberships.needs.documents.zip', [$membership, $need]) }}"
+                                        class="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+                                    >
+                                        <i class="bi bi-file-earmark-zip"></i> {{ __('documents.download_all_zip') }}
+                                    </a>
+                                @endif
                             </li>
                         @endforeach
                     </ul>
@@ -290,15 +394,19 @@
 
                     <p class="mt-2 text-xs text-muted">{{ __('support.contact_member_hint') }}</p>
 
+                    <p id="contact-member-related" class="mt-2 hidden text-xs font-medium text-primary"></p>
+
                     <form
                         id="contact-member-form" method="POST"
                         action="{{ route('admin.memberships.contact', $membership) }}"
                         class="mt-3 hidden space-y-3"
                     >
                         @csrf
+                        <input type="hidden" name="related_type" id="contact-member-related-type">
+                        <input type="hidden" name="related_id" id="contact-member-related-id">
                         <div>
                             <label class="block text-xs font-medium text-muted">{{ __('support.label_subject') }}</label>
-                            <input type="text" name="subject" required maxlength="255"
+                            <input type="text" name="subject" id="contact-member-subject" required maxlength="255"
                                 class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                         </div>
                         <div>
@@ -361,6 +469,21 @@
 
         document.getElementById('contact-member-toggle')?.addEventListener('click', function () {
             document.getElementById('contact-member-form')?.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.declaration-discuss').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.getElementById('contact-member-form')?.classList.remove('hidden');
+                document.getElementById('contact-member-related-type').value = button.dataset.relatedType;
+                document.getElementById('contact-member-related-id').value = button.dataset.relatedId;
+
+                const related = document.getElementById('contact-member-related');
+                related.textContent = @json(__('support.related_to_label')) + ' ' + button.dataset.relatedLabel;
+                related.classList.remove('hidden');
+
+                document.getElementById('contact-member-subject')?.focus();
+                document.getElementById('contact-member-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
         });
     </script>
 @endpush

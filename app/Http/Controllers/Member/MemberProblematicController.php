@@ -17,9 +17,16 @@ class MemberProblematicController extends Controller
     public function edit(Request $request, MembershipDraftService $draftService): View
     {
         $membership = $draftService->draftFor($request->user());
+        $membership->load('problematics');
+
+        // BelongsToMany::with() ne sait pas charger une relation définie sur
+        // le modèle pivot (`documents` sur MembershipProblematic) : on la
+        // charge à part, sans souci de N+1 vu qu'il y a au plus ~16 types de
+        // problématiques.
+        $membership->problematics->each(fn ($problematic) => $problematic->pivot->load('documents'));
 
         return view('profile.problematics-edit', [
-            'membership' => $membership->load('problematics'),
+            'membership' => $membership,
             'problematics' => Problematic::where('is_active', true)->orderBy('display_order')->get(),
         ]);
     }
@@ -41,6 +48,8 @@ class MemberProblematicController extends Controller
             'details.*.priority' => ['nullable', 'in:low,normal,high,urgent'],
         ]);
 
+        $existingStatuses = $membership->problematics->pluck('pivot.status', 'id');
+
         $syncData = [];
 
         foreach ($selected as $problematicId) {
@@ -59,6 +68,7 @@ class MemberProblematicController extends Controller
                 'requested_solution' => $details['requested_solution'] ?? null,
                 'locality' => $details['locality'] ?? null,
                 'priority' => $details['priority'] ?? 'normal',
+                'status' => $existingStatuses[$problematicId] ?? 'submitted',
             ];
         }
 
@@ -93,6 +103,7 @@ class MemberProblematicController extends Controller
             ],
             sender: $user,
             actionUrl: route('admin.memberships.show', $membership),
+            data: ['type' => 'admin_membership', 'id' => $membership->id],
         );
     }
 }

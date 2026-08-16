@@ -3,114 +3,79 @@
 <head>
     <meta charset="utf-8">
     <style>
+        {{--
+            Copie conforme de resources/views/cards/member-card.blade.php
+            (l'aperçu écran à l'adresse /admin/members/{id}/card), converti
+            de classes Tailwind vers du CSS explicite en points : 1px = 0.75pt
+            (96dpi écran -> 72dpi PDF). mPDF ne supporte pas flexbox de façon
+            fiable, donc les lignes "flex" du gabarit écran sont ici des
+            tableaux, mais tailles, couleurs et espacements sont identiques.
+        --}}
         @page { margin: 0; }
         body {
             margin: 0;
             font-family: DejaVu Sans, sans-serif;
             background: #ffffff;
+            color: #1f2937;
         }
         .card {
-            width: 280pt;
-            margin: 0;
-            border: 1.4pt solid #1b5e3a;
-            border-radius: 14pt;
+            width: {{ $cardWidth }}pt;
+            border: 1.5pt solid #1b5e3a;
+            border-radius: 12pt;
             box-sizing: border-box;
             overflow: hidden;
         }
         .header {
-            background: #eaf3ee;
-            padding: 11pt 12pt 10pt;
-            text-align: center;
-            border-bottom: 1.4pt solid #1b5e3a;
+            border-bottom: 1.5pt solid #1b5e3a;
+            padding: 12pt;
         }
-        .header img { height: 30pt; width: 30pt; border-radius: 50%; }
+        .header img { height: 30pt; width: 30pt; border-radius: 50%; border: 0.75pt solid #e5e7eb; vertical-align: middle; }
         .header .brand {
-            display: block;
-            margin-top: 6pt;
-            font-size: 8.5pt;
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: 9pt;
+            font-size: 10.5pt;
             font-weight: bold;
-            letter-spacing: 0.6pt;
-            color: #123f27;
             text-transform: uppercase;
+            color: #1b5e3a;
         }
-        .header .brand-rule {
-            display: block;
-            margin: 5pt auto 0;
-            width: 32pt;
-            height: 1.6pt;
-            background: #f2b705;
-        }
-        .body { padding: 13pt 12pt; }
+        .body { padding: 12pt; }
         .photo {
-            width: 64pt;
-            height: 80pt;
-            border: 1pt solid #d8ded9;
-            border-radius: 8pt;
+            width: 60pt;
+            height: 72pt;
+            border: 0.75pt solid #e5e7eb;
+            border-radius: 6pt;
             background: #f7f8f6;
             text-align: center;
             display: table-cell;
             vertical-align: middle;
-            font-size: 6.5pt;
+            font-size: 7pt;
             color: #6b7280;
         }
-        .photo img { width: 64pt; height: 80pt; object-fit: cover; border-radius: 8pt; }
-        .info { padding-left: 13pt; display: table-cell; vertical-align: middle; width: 175pt; }
-        .eyebrow {
-            font-size: 7pt;
-            font-weight: bold;
-            letter-spacing: 0.6pt;
-            color: #f2b705;
-            background: #123f27;
-            display: inline-block;
-            padding: 2.5pt 7pt;
-            border-radius: 8pt;
-            text-transform: uppercase;
-        }
+        .photo img { width: 60pt; height: 72pt; object-fit: cover; border-radius: 6pt; }
+        .info { padding-left: 12pt; display: table-cell; vertical-align: top; width: {{ $cardWidth - 12 - 60 - 24 }}pt; }
+        .member-label { font-size: 13.5pt; font-weight: bold; color: #1b5e3a; text-transform: uppercase; letter-spacing: 0.4pt; }
         .name {
-            font-size: 11.5pt;
-            font-weight: bold;
+            font-size: 10.5pt;
+            font-weight: 600;
             color: #1f2937;
-            margin-top: 7pt;
+            margin-top: 1.5pt;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .matricule-box {
-            margin-top: 10pt;
-            background: #eaf3ee;
-            border-radius: 7pt;
-            padding: 6pt 9pt;
-        }
-        .matricule-label {
-            font-size: 6pt;
-            color: #4b6b5a;
-            text-transform: uppercase;
-            letter-spacing: 0.6pt;
-        }
-        .matricule-value {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #123f27;
-            letter-spacing: 1pt;
-            margin-top: 1pt;
-        }
+        .matricule-label { font-size: 7.5pt; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4pt; margin-top: 9pt; }
+        .matricule-value { font-size: 15pt; font-weight: bold; color: #1b5e3a; letter-spacing: 0.6pt; }
         .footer {
-            border-top: 1pt solid #e5e7eb;
-            padding: 10pt 12pt;
+            border-top: 1.5pt solid #1b5e3a;
+            padding: 12pt;
         }
         .footer table { width: 100%; }
-        .qr-col { width: {{ $qrSize + 4 }}pt; }
-        .sign-col { text-align: right; vertical-align: middle; }
-        .sign-line { border-bottom: 0.8pt solid #9aa5a0; width: 74pt; height: 16pt; display: inline-block; }
-        .sign-image { height: 20pt; width: auto; max-width: 80pt; display: inline-block; }
-        .signature-label {
-            display: block;
-            margin-top: 3pt;
-            font-size: 6.3pt;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.4pt;
-        }
+        .footer .qr img { display: block; }
+        .sign-col { text-align: right; vertical-align: bottom; }
+        .sign-line { border-bottom: 0.75pt solid #6b7280; width: 72pt; height: 18pt; display: inline-block; }
+        .sign-image { height: 24pt; width: auto; max-width: 72pt; display: inline-block; }
+        .signature-label { display: block; margin-top: 3pt; font-size: 7.5pt; color: #6b7280; }
     </style>
 </head>
 <body>
@@ -121,7 +86,6 @@
                 <img src="{{ $logoDataUri }}" alt="logo">
             @endif
             <span class="brand">{{ __('messages.platform_name') }}</span>
-            <span class="brand-rule"></span>
         </div>
 
         <div class="body">
@@ -135,12 +99,10 @@
                         @endif
                     </td>
                     <td class="info">
-                        <span class="eyebrow">{{ __('card.member_label') }}</span>
+                        <div class="member-label">{{ __('card.member_label') }}</div>
                         <div class="name">{{ $profile?->full_name ?? $membership->user->name }}</div>
-                        <div class="matricule-box">
-                            <div class="matricule-label">{{ __('card.matricule_label') }}</div>
-                            <div class="matricule-value">{{ $membership->member_number }}</div>
-                        </div>
+                        <div class="matricule-label">{{ __('card.matricule_label') }}</div>
+                        <div class="matricule-value">{{ $membership->member_number }}</div>
                     </td>
                 </tr>
             </table>
@@ -149,7 +111,7 @@
         <div class="footer">
             <table>
                 <tr>
-                    <td class="qr-col">
+                    <td class="qr" style="width: {{ $qrSize + 4 }}pt;">
                         <img
                             src="{{ $qrDataUri }}" alt="QR"
                             width="{{ $qrSize }}" height="{{ $qrSize }}"

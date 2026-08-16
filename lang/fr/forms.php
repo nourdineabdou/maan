@@ -26,6 +26,10 @@ return [
     'priority_high' => 'Élevée',
     'priority_urgent' => 'Urgente',
 
+    'status_submitted' => 'Transmis',
+    'status_in_progress' => 'En cours de traitement',
+    'status_resolved' => 'Traité',
+
     'select_placeholder' => '-- Sélectionner --',
     'optional' => '(optionnel)',
     'required_field' => 'Champ obligatoire',

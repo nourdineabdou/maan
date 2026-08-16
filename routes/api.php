@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDocumentController as WebAdminDocumentContro
 use App\Http\Controllers\Admin\AdminExportController;
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\CommuneController as AdminCommuneController;
+use App\Http\Controllers\Api\Admin\DeclarationController as AdminDeclarationController;
 use App\Http\Controllers\Api\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Api\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Api\Admin\MembershipController as AdminMembershipController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\Admin\SupportController as AdminSupportController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Member\AccountController;
+use App\Http\Controllers\Api\Member\DeclarationController as MemberDeclarationController;
 use App\Http\Controllers\Api\Member\DocumentController as MemberDocumentController;
 use App\Http\Controllers\Api\Member\MembershipController as MemberMembershipController;
 use App\Http\Controllers\Api\Member\NotificationController as MemberNotificationController;
@@ -80,8 +82,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/problematics', [MemberProblematicController::class, 'index']);
         Route::put('/me/problematics', [MemberProblematicController::class, 'update']);
 
-        Route::get('/me/need', [PopulationNeedController::class, 'show']);
-        Route::put('/me/need', [PopulationNeedController::class, 'update']);
+        Route::get('/me/need', [PopulationNeedController::class, 'index']);
+        Route::post('/me/need', [PopulationNeedController::class, 'store']);
+
+        Route::get('/me/declarations/needs', [MemberDeclarationController::class, 'needs']);
+        Route::get('/me/declarations/problematics', [MemberDeclarationController::class, 'problematics']);
 
         Route::get('/me/documents', [MemberDocumentController::class, 'index']);
         Route::post('/me/documents', [MemberDocumentController::class, 'store']);
@@ -111,6 +116,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/memberships/{membership}', [AdminMembershipController::class, 'show']);
             Route::post('/memberships/{membership}/approve', [AdminMembershipController::class, 'approve']);
             Route::post('/memberships/{membership}/reject', [AdminMembershipController::class, 'reject']);
+            Route::post('/memberships/{membership}/problematics/{problematic}/status', [AdminMembershipController::class, 'updateProblematicStatus']);
+            Route::post('/memberships/{membership}/needs/{need}/status', [AdminMembershipController::class, 'updateNeedStatus']);
             Route::post('/memberships/{membership}/contact', [AdminSupportController::class, 'store']);
             Route::get('/memberships/{membership}/card', [MembershipCardController::class, 'showJsonForAdmin']);
             Route::get('/memberships/{membership}/card/pdf', [MembershipCardController::class, 'downloadForAdmin'])
@@ -133,6 +140,9 @@ Route::prefix('v1')->group(function () {
 
             Route::put('/communes/{commune}', [AdminCommuneController::class, 'update']);
             Route::delete('/communes/{commune}', [AdminCommuneController::class, 'destroy']);
+
+            Route::get('/declarations/needs', [AdminDeclarationController::class, 'needs']);
+            Route::get('/declarations/problematics', [AdminDeclarationController::class, 'problematics']);
 
             Route::get('/problematics', [AdminProblematicController::class, 'index']);
             Route::post('/problematics', [AdminProblematicController::class, 'store']);

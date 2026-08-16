@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Concerns\ResolvesDeclarationRelation;
 use App\Http\Resources\MemberMessageResource;
 use App\Models\MemberMessage;
 use App\Models\Membership;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class SupportController extends ApiController
 {
+    use ResolvesDeclarationRelation;
+
     /**
      * Contrairement aux fils habituels (ouverts par le membre), l'admin
      * prend ici l'initiative d'écrire en premier à un membre précis, depuis
@@ -24,7 +27,15 @@ class SupportController extends ApiController
         $data = $request->validate([
             'subject' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:5000'],
+            'related_type' => ['nullable', 'in:problematic,need'],
+            'related_id' => ['required_with:related_type', 'integer'],
         ]);
+
+        $relation = $this->resolveDeclarationRelation(
+            $membership,
+            $data['related_type'] ?? null,
+            isset($data['related_id']) ? (int) $data['related_id'] : null,
+        );
 
         $message = MemberMessage::create([
             'user_id' => $membership->user_id,
@@ -32,6 +43,7 @@ class SupportController extends ApiController
             'subject' => $data['subject'],
             'body' => $data['body'],
             'status' => 'open',
+            ...$relation,
         ]);
 
         $notificationService->send(
@@ -46,6 +58,7 @@ class SupportController extends ApiController
             ],
             sender: $request->user(),
             actionUrl: route('support.show', $message),
+            data: ['type' => 'support', 'id' => $message->id],
         );
 
         return response()->json(['data' => MemberMessageResource::make($message)], 201);
@@ -103,6 +116,7 @@ class SupportController extends ApiController
             ],
             sender: $request->user(),
             actionUrl: route('support.show', $message),
+            data: ['type' => 'support', 'id' => $message->id],
         );
 
         return response()->json(['data' => MemberMessageResource::make($message->load('replies.author'))]);

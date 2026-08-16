@@ -10,6 +10,12 @@ return [
     'filter_all_statuses' => 'Tous les statuts',
     'filter_region' => 'Wilaya',
     'filter_all_regions' => 'Toutes les wilayas',
+    'filter_date_from' => 'Du',
+    'filter_date_to' => 'Au',
+    'filter_declaration_status' => 'État',
+    'filter_all_declaration_statuses' => 'Tous les états',
+    'filter_problematic_type' => 'Type de problématique',
+    'filter_all_problematic_types' => 'Tous les types',
     'apply_filters' => 'Filtrer',
 
     'column_registration_number' => 'N° inscription',
@@ -39,11 +45,15 @@ return [
 
     'flash_approved' => 'Adhésion validée. Matricule attribué : :number.',
     'flash_rejected' => 'Adhésion rejetée.',
+    'flash_status_updated' => 'Statut mis à jour.',
 
     'approved_notification_title' => 'Adhésion validée',
     'approved_notification_body' => 'Votre demande d\'adhésion a été validée. Votre matricule : :number.',
     'rejected_notification_title' => 'Adhésion rejetée',
     'rejected_notification_body' => 'Votre demande d\'adhésion a été rejetée. Motif : :reason',
+
+    'declaration_status_notification_title' => 'Mise à jour de votre déclaration',
+    'declaration_status_notification_body' => '":label" est maintenant : :status.',
 
     'section_personal_info' => 'Informations personnelles',
     'section_geographic_info' => 'Informations géographiques',
@@ -76,4 +86,14 @@ return [
 
     'reviewed_by' => 'Traité par',
     'rejection_reason' => 'Motif du rejet',
+
+    'declared_needs_title' => 'Besoins déclarés',
+    'declared_problematics_title' => 'Problématiques déclarées',
+    'column_member' => 'Membre',
+    'column_description' => 'Description',
+    'column_problematic' => 'Problématique',
+    'column_priority' => 'Priorité',
+    'column_date' => 'Date',
+    'no_declared_needs' => 'Aucun besoin déclaré pour le moment.',
+    'no_declared_problematics' => 'Aucune problématique déclarée pour le moment.',
 ];

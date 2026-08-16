@@ -25,6 +25,8 @@ class MemberDocumentResource extends JsonResource
             'is_verified' => $this->is_verified,
             'verified_at' => $this->verified_at,
             'verification_note' => $this->verification_note,
+            'related_kind' => $this->relatedKind(),
+            'related_id' => $this->related_id,
             'created_at' => $this->created_at,
         ];
     }

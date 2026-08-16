@@ -42,6 +42,10 @@
         </div>
     </div>
 
+    @if ($message->relatedLabel())
+        <p class="mt-1 text-xs font-medium text-primary">{{ __('support.related_to_label') }} {{ $message->relatedLabel() }}</p>
+    @endif
+
     <div class="mt-6 max-w-2xl space-y-4">
         <div class="rounded-2xl border p-4 {{ $message->wasStartedByAdmin() ? 'border-primary bg-primary-light' : 'border-border bg-surface' }}">
             <div class="flex items-center justify-between">

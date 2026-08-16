@@ -102,7 +102,7 @@
 
         <div class="rounded-2xl border border-border bg-surface p-5">
             <p class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('profile.card_population_need') }}</p>
-            <p class="mt-2 text-sm text-text">{{ $membership->population_needs ? __('memberships.filled') : __('memberships.not_provided') }}</p>
+            <p class="mt-2 text-sm text-text">{{ $membership->needs->isNotEmpty() ? __('memberships.filled') : __('memberships.not_provided') }}</p>
             <a href="{{ route('profile.need.edit') }}" class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                 <i class="bi bi-pencil"></i> {{ __('profile.edit') }}
             </a>

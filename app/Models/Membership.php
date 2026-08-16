@@ -20,7 +20,6 @@ class Membership extends Model
         'member_number',
         'status',
         'member_message',
-        'population_needs',
         'submitted_at',
         'reviewed_at',
         'approved_at',
@@ -64,12 +63,19 @@ class Membership extends Model
         )
             ->using(MembershipProblematic::class)
             ->withPivot([
+                'id',
                 'description',
                 'requested_solution',
                 'locality',
                 'priority',
+                'status',
             ])
             ->withTimestamps();
+    }
+
+    public function needs(): HasMany
+    {
+        return $this->hasMany(MembershipNeed::class);
     }
 
     public function documents(): HasMany

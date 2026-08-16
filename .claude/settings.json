@@ -32,7 +32,21 @@
       "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/dashboard\" -o /tmp/dash2.html -w \"HTTP %{http_code}\\\\n\")",
       "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/lang/fr\" -o /dev/null -w \"switch: %{http_code}\\\\n\")",
       "Bash(curl -s -b /tmp/admin_fresh.txt \"http://ensemble-republique.test/dashboard\" -o /tmp/dash3.html -w \"HTTP %{http_code}\\\\n\")",
-      "Bash(curl -s \"http://ensemble-republique.test/api/v1/public/statistics\" -H \"Accept: application/json\")"
+      "Bash(curl -s \"http://ensemble-republique.test/api/v1/public/statistics\" -H \"Accept: application/json\")",
+      "Bash(php -l app/Http/Controllers/MembershipCardController.php)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -l app/Http/Controllers/MembershipCardController.php)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan tinker '--execute= *)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -r ' *)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -r *)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan *)",
+      "Bash(npx expo *)",
+      "Bash(echo \"TYPECHECK_DONE_EXIT=$?\")",
+      "Bash(unlink \"c:/laragon/www/ensemble-republique/storage/app/need-page.html\")",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan tinker --execute=\" *)",
+      "Bash(node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json)"
+    ],
+    "additionalDirectories": [
+      "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp"
     ]
   }
 }

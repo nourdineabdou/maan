@@ -16,7 +16,7 @@ class ProfileOverviewController extends Controller
         return view('profile.overview', [
             'user' => $request->user(),
             'profile' => $request->user()->profile,
-            'membership' => $membership->load(['problematics', 'documents']),
+            'membership' => $membership->load(['problematics', 'needs', 'documents']),
         ]);
     }
 }

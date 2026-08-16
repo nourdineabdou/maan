@@ -38,7 +38,29 @@
                     >
                     @if ($problematic->icon)<i class="bi {{ $problematic->icon }} text-primary"></i>@endif
                     <span class="font-medium text-text">{{ $problematic->getTranslation('name') }}</span>
+
+                    @if ($pivot)
+                        @php
+                            $statusClass = match ($pivot->status) {
+                                'resolved' => 'bg-primary-light text-primary',
+                                'in_progress' => 'bg-secondary/20 text-secondary',
+                                default => 'bg-border text-muted',
+                            };
+                        @endphp
+                        <span class="ms-auto shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold {{ $statusClass }}">
+                            {{ __('forms.status_'.$pivot->status) }}
+                        </span>
+                    @endif
                 </label>
+
+                @if ($pivot)
+                    <a
+                        href="{{ route('support.create', ['related_type' => 'problematic', 'related_id' => $pivot->id]) }}"
+                        class="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+                    >
+                        <i class="bi bi-chat-dots"></i> {{ __('profile.discuss_declaration_button') }}
+                    </a>
+                @endif
 
                 <div class="problematic-details mt-3 grid gap-3 sm:grid-cols-2 {{ $checked ? '' : 'hidden' }}">
                     <div class="sm:col-span-2">
@@ -81,6 +103,58 @@
             {{ __('profile.save') }}
         </button>
     </form>
+
+    @if ($membership->problematics->isNotEmpty())
+        <div class="mt-8 max-w-2xl space-y-3">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('profile.problematic_justifications_title') }}</h2>
+
+            @foreach ($membership->problematics as $problematic)
+                <div class="rounded-2xl border border-border bg-surface p-4">
+                    <p class="text-sm font-medium text-text">{{ $problematic->getTranslation('name') }}</p>
+
+                    @if ($problematic->pivot->documents->isEmpty())
+                        <p class="mt-1.5 text-xs text-muted">{{ __('profile.need_no_justifications') }}</p>
+                    @else
+                        <ul class="mt-1.5 space-y-1.5">
+                            @foreach ($problematic->pivot->documents as $document)
+                                <li class="flex items-center justify-between gap-2 text-xs">
+                                    <a href="{{ $document->file_url }}" target="_blank" class="font-medium text-primary hover:underline">
+                                        {{ $document->title ?: $document->original_name }}
+                                    </a>
+                                    <form
+                                        method="POST" action="{{ route('profile.documents.destroy', $document) }}"
+                                        data-confirm="{{ __('profile.delete_document_confirm') }}"
+                                        data-confirm-button="{{ __('messages.delete') }}"
+                                        data-cancel-button="{{ __('messages.cancel') }}"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="font-medium text-accent hover:underline">
+                                            {{ __('messages.delete') }}
+                                        </button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    <form
+                        method="POST" action="{{ route('profile.documents.store') }}" enctype="multipart/form-data"
+                        class="mt-2 flex flex-wrap items-center gap-2"
+                    >
+                        @csrf
+                        <input type="hidden" name="document_type" value="problematic_justification">
+                        <input type="hidden" name="related_type" value="problematic">
+                        <input type="hidden" name="related_id" value="{{ $problematic->pivot->id }}">
+                        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required class="text-xs">
+                        <button type="submit" class="rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary-light">
+                            <i class="bi bi-upload"></i> {{ __('profile.upload_document') }}
+                        </button>
+                    </form>
+                </div>
+            @endforeach
+        </div>
+    @endif
 @endsection
 
 @push('scripts')

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAnnouncementController;
 use App\Http\Controllers\Admin\AdminCommuneController;
+use App\Http\Controllers\Admin\AdminDeclarationController;
 use App\Http\Controllers\Admin\AdminDocumentController;
 use App\Http\Controllers\Admin\AdminExportController;
 use App\Http\Controllers\Admin\AdminMemberController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Member\MemberDeclarationController;
 use App\Http\Controllers\Member\MemberDocumentController;
 use App\Http\Controllers\Member\MemberProblematicController;
 use App\Http\Controllers\Member\MyMembershipController;
@@ -75,8 +77,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/problematics', [MemberProblematicController::class, 'edit'])->name('problematics.edit');
         Route::put('/problematics', [MemberProblematicController::class, 'update'])->name('problematics.update');
 
-        Route::get('/need', [PopulationNeedController::class, 'edit'])->name('need.edit');
-        Route::put('/need', [PopulationNeedController::class, 'update'])->name('need.update');
+        Route::get('/need', [PopulationNeedController::class, 'index'])->name('need.edit');
+        Route::post('/need', [PopulationNeedController::class, 'store'])->name('need.store');
+
+        Route::get('/declarations/needs', [MemberDeclarationController::class, 'needs'])->name('declarations.needs');
+        Route::get('/declarations/problematics', [MemberDeclarationController::class, 'problematics'])->name('declarations.problematics');
 
         Route::get('/documents', [MemberDocumentController::class, 'index'])->name('documents.index');
         Route::post('/documents', [MemberDocumentController::class, 'store'])->name('documents.store');
@@ -119,8 +124,16 @@ Route::middleware('auth')->group(function () {
                 ->name('memberships.approve');
             Route::post('/memberships/{membership}/reject', [AdminMembershipController::class, 'reject'])
                 ->name('memberships.reject');
+            Route::post('/memberships/{membership}/problematics/{problematic}/status', [AdminMembershipController::class, 'updateProblematicStatus'])
+                ->name('memberships.problematics.status');
+            Route::post('/memberships/{membership}/needs/{need}/status', [AdminMembershipController::class, 'updateNeedStatus'])
+                ->name('memberships.needs.status');
             Route::get('/memberships/{membership}/documents/zip', [AdminDocumentController::class, 'downloadZip'])
                 ->name('memberships.documents.zip');
+            Route::get('/memberships/{membership}/needs/{need}/documents/zip', [AdminDocumentController::class, 'downloadNeedZip'])
+                ->name('memberships.needs.documents.zip');
+            Route::get('/memberships/{membership}/problematics/{problematic}/documents/zip', [AdminDocumentController::class, 'downloadProblematicZip'])
+                ->name('memberships.problematics.documents.zip');
             Route::post('/memberships/{membership}/contact', [AdminSupportMessageController::class, 'store'])
                 ->name('memberships.contact');
 
@@ -141,6 +154,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/communes/{commune}/edit', [AdminCommuneController::class, 'edit'])->name('communes.edit');
             Route::put('/communes/{commune}', [AdminCommuneController::class, 'update'])->name('communes.update');
             Route::delete('/communes/{commune}', [AdminCommuneController::class, 'destroy'])->name('communes.destroy');
+
+            Route::get('/declarations/needs', [AdminDeclarationController::class, 'needs'])->name('declarations.needs');
+            Route::get('/declarations/problematics', [AdminDeclarationController::class, 'problematics'])->name('declarations.problematics');
 
             Route::get('/problematics', [AdminProblematicController::class, 'index'])->name('problematics.index');
             Route::get('/problematics/create', [AdminProblematicController::class, 'create'])->name('problematics.create');

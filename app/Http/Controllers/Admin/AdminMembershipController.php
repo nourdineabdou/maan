@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RejectMembershipRequest;
 use App\Models\Membership;
+use App\Models\MembershipNeed;
+use App\Models\Problematic;
 use App\Services\MembershipApprovalService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminMembershipController extends Controller
@@ -61,16 +64,23 @@ class AdminMembershipController extends Controller
     {
         abort_unless($request->user()->can('members.view'), 403);
 
+        $membership->load([
+            'user.profile.region',
+            'user.profile.moughataaRef',
+            'user.profile.communeRef',
+            'documents',
+            'problematics',
+            'needs' => fn ($query) => $query->latest()->with('documents'),
+            'statusHistories.changedBy',
+            'reviewer',
+        ]);
+
+        // Cf. Member\MemberProblematicController::edit() : eager-loading une
+        // relation définie sur le modèle pivot ne peut pas passer par with().
+        $membership->problematics->each(fn ($problematic) => $problematic->pivot->load('documents'));
+
         return view('admin.memberships.show', [
-            'membership' => $membership->load([
-                'user.profile.region',
-                'user.profile.moughataaRef',
-                'user.profile.communeRef',
-                'documents',
-                'problematics',
-                'statusHistories.changedBy',
-                'reviewer',
-            ]),
+            'membership' => $membership,
         ]);
     }
 
@@ -92,6 +102,7 @@ class AdminMembershipController extends Controller
             ],
             sender: $request->user(),
             actionUrl: route('profile.membership'),
+            data: ['type' => 'membership'],
         );
 
         return redirect()
@@ -117,10 +128,77 @@ class AdminMembershipController extends Controller
             ],
             sender: $request->user(),
             actionUrl: route('profile.membership'),
+            data: ['type' => 'membership'],
         );
 
         return redirect()
             ->route('admin.memberships.show', $membership)
             ->with('status', __('memberships.flash_rejected'));
+    }
+
+    public function updateProblematicStatus(Request $request, Membership $membership, Problematic $problematic, NotificationService $notificationService): RedirectResponse
+    {
+        abort_unless($request->user()->can('problematics.manage'), 403);
+        abort_unless($membership->problematics()->where('problematic_id', $problematic->id)->exists(), 404);
+
+        $data = $request->validate([
+            'status' => ['required', 'in:submitted,in_progress,resolved'],
+        ]);
+
+        $membership->problematics()->updateExistingPivot($problematic->id, ['status' => $data['status']]);
+
+        $this->notifyStatusChange(
+            $notificationService,
+            $request,
+            $membership,
+            $problematic->getTranslation('name'),
+            $data['status'],
+            route('profile.problematics.edit'),
+            ['type' => 'problematics'],
+        );
+
+        return back()->with('status', __('memberships.flash_status_updated'));
+    }
+
+    public function updateNeedStatus(Request $request, Membership $membership, MembershipNeed $need, NotificationService $notificationService): RedirectResponse
+    {
+        abort_unless($request->user()->can('problematics.manage'), 403);
+        abort_unless($need->membership_id === $membership->id, 404);
+
+        $data = $request->validate([
+            'status' => ['required', 'in:submitted,in_progress,resolved'],
+        ]);
+
+        $need->update(['status' => $data['status']]);
+
+        $this->notifyStatusChange(
+            $notificationService,
+            $request,
+            $membership,
+            Str::limit($need->description, 60),
+            $data['status'],
+            route('profile.need.edit'),
+            ['type' => 'population_need'],
+        );
+
+        return back()->with('status', __('memberships.flash_status_updated'));
+    }
+
+    private function notifyStatusChange(NotificationService $notificationService, Request $request, Membership $membership, string $label, string $status, string $actionUrl, ?array $data = null): void
+    {
+        $notificationService->send(
+            recipients: [$membership->user],
+            title: [
+                'fr' => __('memberships.declaration_status_notification_title', [], 'fr'),
+                'ar' => __('memberships.declaration_status_notification_title', [], 'ar'),
+            ],
+            message: [
+                'fr' => __('memberships.declaration_status_notification_body', ['label' => $label, 'status' => __('forms.status_'.$status, [], 'fr')], 'fr'),
+                'ar' => __('memberships.declaration_status_notification_body', ['label' => $label, 'status' => __('forms.status_'.$status, [], 'ar')], 'ar'),
+            ],
+            sender: $request->user(),
+            actionUrl: $actionUrl,
+            data: $data,
+        );
     }
 }

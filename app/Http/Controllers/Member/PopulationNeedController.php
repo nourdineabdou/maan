@@ -13,29 +13,30 @@ use Illuminate\View\View;
 
 class PopulationNeedController extends Controller
 {
-    public function edit(Request $request, MembershipDraftService $draftService): View
+    public function index(Request $request, MembershipDraftService $draftService): View
     {
         $membership = $draftService->draftFor($request->user());
 
         return view('profile.need-edit', [
-            'membership' => $membership->load('documents'),
+            'membership' => $membership->load(['needs' => fn ($query) => $query->latest()->with('documents')]),
         ]);
     }
 
-    public function update(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): RedirectResponse
+    public function store(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): RedirectResponse
     {
         $user = $request->user();
         $membership = $draftService->draftFor($user);
 
         $data = $request->validate([
-            'population_needs' => ['nullable', 'string', 'max:5000'],
+            'description' => ['required', 'string', 'max:5000'],
         ]);
 
-        $membership->update($data);
+        $membership->needs()->create([
+            'description' => $data['description'],
+            'status' => 'submitted',
+        ]);
 
-        if (! empty($data['population_needs'])) {
-            $this->notifyAdmins($notificationService, $user, $membership);
-        }
+        $this->notifyAdmins($notificationService, $user, $membership);
 
         return redirect()
             ->route('profile.need.edit')
@@ -62,6 +63,7 @@ class PopulationNeedController extends Controller
             ],
             sender: $user,
             actionUrl: route('admin.memberships.show', $membership),
+            data: ['type' => 'admin_membership', 'id' => $membership->id],
         );
     }
 }

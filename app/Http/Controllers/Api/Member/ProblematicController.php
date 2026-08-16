@@ -17,6 +17,8 @@ class ProblematicController extends ApiController
     public function index(Request $request, MembershipDraftService $draftService): JsonResponse
     {
         $membership = $draftService->draftFor($request->user());
+        $membership->load('problematics');
+        $membership->problematics->each(fn ($problematic) => $problematic->pivot->load('documents'));
 
         return response()->json([
             'data' => [
@@ -45,6 +47,8 @@ class ProblematicController extends ApiController
             'details.*.priority' => ['nullable', 'in:low,normal,high,urgent'],
         ]);
 
+        $existingStatuses = $membership->problematics->pluck('pivot.status', 'id');
+
         $syncData = [];
 
         foreach ($selected as $problematicId) {
@@ -64,6 +68,7 @@ class ProblematicController extends ApiController
                 'requested_solution' => $details['requested_solution'] ?? null,
                 'locality' => $details['locality'] ?? null,
                 'priority' => $details['priority'] ?? 'normal',
+                'status' => $existingStatuses[$problematicId] ?? 'submitted',
             ];
         }
 
@@ -98,6 +103,7 @@ class ProblematicController extends ApiController
             ],
             sender: $user,
             actionUrl: route('admin.memberships.show', $membership),
+            data: ['type' => 'admin_membership', 'id' => $membership->id],
         );
     }
 }

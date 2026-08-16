@@ -26,6 +26,10 @@ return [
     'priority_high' => 'مرتفعة',
     'priority_urgent' => 'عاجلة',
 
+    'status_submitted' => 'تم الإرسال',
+    'status_in_progress' => 'قيد المعالجة',
+    'status_resolved' => 'تمت المعالجة',
+
     'select_placeholder' => '-- اختر --',
     'optional' => '(اختياري)',
     'required_field' => 'حقل مطلوب',

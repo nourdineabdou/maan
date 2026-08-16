@@ -118,10 +118,11 @@
             <div>
                 <label class="block text-sm font-medium text-text">{{ __('profile.document_type_label') }}</label>
                 <select name="document_type" required class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-                    @foreach (['problematic_justification', 'other'] as $type)
+                    @foreach (['other'] as $type)
                         <option value="{{ $type }}">{{ __('documents.type_'.$type) }}</option>
                     @endforeach
                 </select>
+                <p class="mt-1 text-xs text-muted">{{ __('profile.problematic_justification_hint') }}</p>
             </div>
 
             <div>

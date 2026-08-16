@@ -46,6 +46,8 @@ return [
     'contact_member_title' => 'Contacter ce membre',
     'contact_member_button' => 'Nouveau message',
     'contact_member_hint' => 'Envoyez un message directement à ce membre, il le recevra dans son espace.',
+    'contact_about_button' => 'Discuter à ce sujet',
+    'related_to_label' => 'Concernant :',
     'new_thread_notification_title' => 'Nouveau message de l\'administration',
     'new_thread_notification_body' => 'L\'administration vous a envoyé un message : ":subject"',
 ];

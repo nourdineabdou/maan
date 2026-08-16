@@ -51,6 +51,9 @@
                                 <a href="{{ route('admin.support.show', $message) }}" class="font-medium text-primary hover:underline">
                                     {{ $message->subject }}
                                 </a>
+                                @if ($message->relatedLabel())
+                                    <p class="text-xs text-muted">{{ __('support.related_to_label') }} {{ $message->relatedLabel() }}</p>
+                                @endif
                             </td>
                             <td class="px-4 py-3 text-muted">{{ $message->user->profile?->full_name ?? $message->user->name }}</td>
                             <td class="px-4 py-3">
@@ -83,6 +86,9 @@
                         </span>
                     </div>
                     <p class="mt-1 text-xs text-muted">{{ $message->user->profile?->full_name ?? $message->user->name }}</p>
+                    @if ($message->relatedLabel())
+                        <p class="mt-1 text-xs font-medium text-primary">{{ __('support.related_to_label') }} {{ $message->relatedLabel() }}</p>
+                    @endif
                     <p class="mt-1 text-xs text-muted">{{ $message->created_at->format('d/m/Y H:i') }}</p>
                 </a>
             @endforeach

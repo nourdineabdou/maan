@@ -27,14 +27,25 @@ return [
     'personal_edit_title' => 'Mes informations personnelles',
     'professional_edit_title' => 'Mes informations professionnelles',
     'problematics_edit_title' => 'Mes problématiques',
+    'problematics_manage_button' => 'Gérer mes problématiques',
     'documents_title' => 'Mes documents',
     'membership_title' => 'Mon adhésion',
+
+    'my_declared_needs_title' => 'Mes besoins déclarés',
+    'my_declared_problematics_title' => 'Mes problématiques déclarées',
+    'need_add_button' => 'Déclarer un besoin',
 
     'need_edit_title' => 'Besoin de la population',
     'need_description_label' => 'Décrivez le besoin constaté',
     'need_description_hint' => 'Expliquez le problème rencontré par la population de votre localité.',
+    'need_list_title' => 'Besoins déjà déclarés',
+    'need_list_empty' => 'Aucun besoin déclaré pour le moment.',
     'need_justifications_title' => 'Justificatifs',
     'need_no_justifications' => 'Aucun justificatif envoyé pour le moment.',
+    'problematic_justifications_title' => 'Justificatifs par problématique',
+    'problematic_justification_hint' => 'Pour un justificatif lié à une problématique précise, ajoutez-le depuis la page "Mes problématiques".',
+
+    'discuss_declaration_button' => 'Discuter de ce point',
 
     'save' => 'Enregistrer',
     'flash_saved' => 'Vos informations ont été enregistrées.',

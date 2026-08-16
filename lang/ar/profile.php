@@ -27,14 +27,25 @@ return [
     'personal_edit_title' => 'معلوماتي الشخصية',
     'professional_edit_title' => 'معلوماتي المهنية',
     'problematics_edit_title' => 'انشغالاتي',
+    'problematics_manage_button' => 'إدارة انشغالاتي',
     'documents_title' => 'وثائقي',
     'membership_title' => 'انتسابي',
+
+    'my_declared_needs_title' => 'احتياجاتي المصرح بها',
+    'my_declared_problematics_title' => 'انشغالاتي المصرح بها',
+    'need_add_button' => 'تسجيل حاجة',
 
     'need_edit_title' => 'حاجة السكان',
     'need_description_label' => 'صف الحاجة المسجلة',
     'need_description_hint' => 'اشرح المشكلة التي يواجهها سكان منطقتك.',
+    'need_list_title' => 'الاحتياجات المسجلة سابقاً',
+    'need_list_empty' => 'لم يتم تسجيل أي حاجة حتى الآن.',
     'need_justifications_title' => 'المرفقات الداعمة',
     'need_no_justifications' => 'لم يتم إرسال أي مرفق حتى الآن.',
+    'problematic_justifications_title' => 'المرفقات حسب الانشغال',
+    'problematic_justification_hint' => 'لإضافة مرفق مرتبط بانشغال معيّن، أضفه من صفحة "انشغالاتي".',
+
+    'discuss_declaration_button' => 'مناقشة هذه النقطة',
 
     'save' => 'حفظ',
     'flash_saved' => 'تم حفظ معلوماتك.',

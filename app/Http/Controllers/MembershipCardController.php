@@ -15,8 +15,14 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MembershipCardController extends Controller
 {
-    /** Taille d'affichage du QR code sur la carte PDF, en points. */
-    private const QR_SIZE_PT = 56;
+    /**
+     * Dimensions calquées sur la carte affichée à l'écran (cards/member-card
+     * .blade.php) : max-w-sm = 384px, h-16/w-16 pour le QR = 64px. Converties
+     * en points (1px = 0.75pt) pour que le PDF soit un copie conforme.
+     */
+    private const CARD_WIDTH_PT = 288;
+
+    private const QR_SIZE_PT = 48;
 
     public function show(Request $request): View|RedirectResponse
     {
@@ -107,13 +113,14 @@ class MembershipCardController extends Controller
             'membership' => $membership->load('user.profile.region'),
             'qrDataUri' => $this->qrDataUri($membership),
             'qrSize' => self::QR_SIZE_PT,
+            'cardWidth' => self::CARD_WIDTH_PT,
             'logoDataUri' => $this->logoDataUri(),
             'photoDataUri' => $this->photoDataUri($membership),
             'signatureDataUri' => $this->signatureDataUri(),
         ])->render();
 
         $mpdf = new Mpdf([
-            'format' => [$this->ptToMm(280), $this->ptToMm(270)],
+            'format' => [$this->ptToMm(self::CARD_WIDTH_PT), $this->ptToMm(244)],
             'margin_left' => 0,
             'margin_right' => 0,
             'margin_top' => 0,

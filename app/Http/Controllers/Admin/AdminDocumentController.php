@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MemberDocument;
 use App\Models\Membership;
+use App\Models\MembershipNeed;
+use App\Models\MembershipProblematic;
+use App\Models\Problematic;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -61,8 +65,49 @@ class AdminDocumentController extends Controller
     {
         abort_unless($request->user()->can('documents.view'), 403);
 
-        $documents = $membership->documents;
+        return $this->zipDocuments(
+            $membership->documents,
+            'documents-'.$membership->registration_number,
+            fn (MemberDocument $document) => preg_replace('/[\\\\\/:*?"<>|]+/', '-', __('documents.type_'.$document->document_type)),
+        );
+    }
 
+    /**
+     * Toutes les pièces jointes d'UNE déclaration précise (un besoin ou une
+     * problématique peut avoir plusieurs fichiers) — nommé par référence
+     * d'adhésion + déclaration pour rester identifiable une fois téléchargé.
+     */
+    public function downloadNeedZip(Request $request, Membership $membership, MembershipNeed $need): BinaryFileResponse
+    {
+        abort_unless($request->user()->can('documents.view'), 403);
+        abort_unless($need->membership_id === $membership->id, 404);
+
+        return $this->zipDocuments(
+            $need->documents,
+            $membership->registration_number.'-besoin-'.$need->id,
+        );
+    }
+
+    public function downloadProblematicZip(Request $request, Membership $membership, Problematic $problematic): BinaryFileResponse
+    {
+        abort_unless($request->user()->can('documents.view'), 403);
+
+        $pivot = MembershipProblematic::where('membership_id', $membership->id)
+            ->where('problematic_id', $problematic->id)
+            ->firstOrFail();
+
+        return $this->zipDocuments(
+            $pivot->documents,
+            $membership->registration_number.'-problematique-'.$problematic->code,
+        );
+    }
+
+    /**
+     * @param  Collection<int, MemberDocument>  $documents
+     * @param  (callable(MemberDocument): string)|null  $entryNamer  Nom de base de chaque entrée (sans extension) ; par défaut le nom original du fichier.
+     */
+    private function zipDocuments(Collection $documents, string $baseName, ?callable $entryNamer = null): BinaryFileResponse
+    {
         abort_if($documents->isEmpty(), 404);
 
         $zipDirectory = storage_path('app/tmp');
@@ -71,7 +116,7 @@ class AdminDocumentController extends Controller
             mkdir($zipDirectory, 0755, true);
         }
 
-        $zipPath = $zipDirectory.'/documents-'.$membership->registration_number.'-'.time().'.zip';
+        $zipPath = $zipDirectory.'/'.$baseName.'-'.time().'.zip';
 
         $zip = new ZipArchive();
         $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -84,7 +129,9 @@ class AdminDocumentController extends Controller
             }
 
             $extension = pathinfo($document->file_path, PATHINFO_EXTENSION);
-            $label = preg_replace('/[\\\\\/:*?"<>|]+/', '-', __('documents.type_'.$document->document_type));
+            $label = $entryNamer
+                ? $entryNamer($document)
+                : pathinfo($document->original_name, PATHINFO_FILENAME);
 
             $entryName = $label.'.'.$extension;
             $usedNames[$label] = ($usedNames[$label] ?? 0) + 1;
@@ -98,7 +145,7 @@ class AdminDocumentController extends Controller
 
         $zip->close();
 
-        return response()->download($zipPath, 'documents-'.$membership->registration_number.'.zip')
+        return response()->download($zipPath, $baseName.'.zip')
             ->deleteFileAfterSend();
     }
 

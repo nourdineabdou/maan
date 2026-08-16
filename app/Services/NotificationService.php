@@ -25,15 +25,17 @@ class NotificationService
         User $sender,
         ?string $actionUrl = null,
         ?MessageCampaign $campaign = null,
+        ?array $data = null,
     ): Notification {
         $recipients = collect($recipients);
 
-        [$notification, $recipientIds] = DB::transaction(function () use ($recipients, $title, $message, $sender, $actionUrl, $campaign) {
+        [$notification, $recipientIds] = DB::transaction(function () use ($recipients, $title, $message, $sender, $actionUrl, $campaign, $data) {
             $notification = Notification::create([
                 'type' => $campaign ? 'campaign_message' : 'system',
                 'title' => $title,
                 'message' => $message,
                 'action_url' => $actionUrl,
+                'data' => $data,
                 'message_campaign_id' => $campaign?->id,
                 'created_by' => $sender->id,
             ]);

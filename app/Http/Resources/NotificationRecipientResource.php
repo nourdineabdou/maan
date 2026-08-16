@@ -25,6 +25,7 @@ class NotificationRecipientResource extends JsonResource
                 'title' => $this->notification->getTranslation('title'),
                 'message' => $this->notification->getTranslation('message'),
                 'action_url' => $this->notification->action_url,
+                'data' => $this->notification->data,
                 'created_at' => $this->notification->created_at,
             ]),
             'created_at' => $this->created_at,

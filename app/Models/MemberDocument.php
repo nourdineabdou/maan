@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Storage;
 
 class MemberDocument extends Model
@@ -24,6 +25,8 @@ class MemberDocument extends Model
         'verified_by',
         'verified_at',
         'verification_note',
+        'related_type',
+        'related_id',
     ];
 
     protected function casts(): array
@@ -48,6 +51,20 @@ class MemberDocument extends Model
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function related(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function relatedKind(): ?string
+    {
+        return match (true) {
+            $this->related instanceof MembershipProblematic => 'problematic',
+            $this->related instanceof MembershipNeed => 'need',
+            default => null,
+        };
     }
 
     public function getFileUrlAttribute(): string

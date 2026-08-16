@@ -46,6 +46,8 @@ return [
     'contact_member_title' => 'التواصل مع هذا العضو',
     'contact_member_button' => 'رسالة جديدة',
     'contact_member_hint' => 'أرسل رسالة مباشرة إلى هذا العضو، ستصله في مساحته الخاصة.',
+    'contact_about_button' => 'مناقشة هذا الموضوع',
+    'related_to_label' => 'بخصوص:',
     'new_thread_notification_title' => 'رسالة جديدة من الإدارة',
     'new_thread_notification_body' => 'أرسلت لك الإدارة رسالة: ":subject"',
 ];

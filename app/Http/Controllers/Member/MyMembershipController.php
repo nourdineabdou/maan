@@ -70,6 +70,7 @@ class MyMembershipController extends Controller
                 ],
                 sender: $user,
                 actionUrl: route('admin.memberships.show', $membership),
+                data: ['type' => 'admin_membership', 'id' => $membership->id],
             );
         }
 

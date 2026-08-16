@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Member;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Concerns\ResolvesDeclarationRelation;
 use App\Http\Requests\Member\DocumentUploadRequest;
 use App\Http\Resources\MemberDocumentResource;
 use App\Models\MemberDocument;
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends ApiController
 {
+    use ResolvesDeclarationRelation;
+
+
     public function index(Request $request, MembershipDraftService $draftService): JsonResponse
     {
         $membership = $draftService->draftFor($request->user());
@@ -27,6 +31,12 @@ class DocumentController extends ApiController
         $file = $request->file('file');
         $path = $file->store('documents', 'public');
 
+        $relation = $this->resolveDeclarationRelation(
+            $membership,
+            $request->input('related_type'),
+            $request->input('related_id') ? (int) $request->input('related_id') : null,
+        );
+
         $document = $membership->documents()->create([
             'document_type' => $request->input('document_type'),
             'title' => $request->input('title'),
@@ -34,6 +44,7 @@ class DocumentController extends ApiController
             'original_name' => $file->getClientOriginalName(),
             'mime_type' => $file->getClientMimeType(),
             'file_size' => $file->getSize(),
+            ...$relation,
         ]);
 
         // Cf. Member\MemberDocumentController::store (Web).

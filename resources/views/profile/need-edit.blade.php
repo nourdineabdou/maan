@@ -19,16 +19,15 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('profile.need.update') }}" class="mt-6 max-w-2xl space-y-4 rounded-2xl border border-border bg-surface p-6">
+    <form method="POST" action="{{ route('profile.need.store') }}" class="mt-6 max-w-2xl space-y-4 rounded-2xl border border-border bg-surface p-6">
         @csrf
-        @method('PUT')
 
         <div>
             <label class="block text-sm font-medium text-text">{{ __('profile.need_description_label') }}</label>
             <textarea
-                name="population_needs" rows="5"
+                name="description" rows="5"
                 class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >{{ old('population_needs', $membership->population_needs) }}</textarea>
+            >{{ old('description') }}</textarea>
             <p class="mt-1 text-xs text-muted">{{ __('profile.need_description_hint') }}</p>
         </div>
 
@@ -38,59 +37,81 @@
     </form>
 
     <div class="mt-8 max-w-2xl">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('profile.need_justifications_title') }}</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('profile.need_list_title') }}</h2>
 
-        @php $needDocuments = $membership->documents->where('document_type', 'need_justification'); @endphp
-
-        @if ($needDocuments->isEmpty())
-            <p class="mt-3 text-sm text-muted">{{ __('profile.need_no_justifications') }}</p>
+        @if ($membership->needs->isEmpty())
+            <p class="mt-3 text-sm text-muted">{{ __('profile.need_list_empty') }}</p>
         @else
-            <div class="mt-3 space-y-2">
-                @foreach ($needDocuments as $document)
-                    <div class="flex items-center justify-between rounded-2xl border border-border bg-surface p-4">
-                        <div>
-                            <p class="font-medium text-text">{{ $document->title ?: $document->original_name }}</p>
-                            <p class="text-xs text-muted">{{ $document->created_at->format('d/m/Y') }}</p>
+            <ul class="mt-3 space-y-3 text-sm">
+                @foreach ($membership->needs as $need)
+                    @php
+                        $statusClass = match ($need->status) {
+                            'resolved' => 'bg-primary-light text-primary',
+                            'in_progress' => 'bg-secondary/20 text-secondary',
+                            default => 'bg-border text-muted',
+                        };
+                    @endphp
+                    <li class="rounded-2xl border border-border bg-surface p-4">
+                        <div class="flex items-start justify-between gap-2">
+                            <p class="whitespace-pre-line text-text">{{ $need->description }}</p>
+                            <span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold {{ $statusClass }}">
+                                {{ __('forms.status_'.$need->status) }}
+                            </span>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ $document->file_url }}" target="_blank" class="text-sm font-medium text-primary hover:underline">
-                                {{ __('documents.view') }}
-                            </a>
+
+                        <a
+                            href="{{ route('support.create', ['related_type' => 'need', 'related_id' => $need->id]) }}"
+                            class="mt-2 inline-block text-xs font-medium text-primary hover:underline"
+                        >
+                            <i class="bi bi-chat-dots"></i> {{ __('profile.discuss_declaration_button') }}
+                        </a>
+
+                        <div class="mt-3 border-t border-border pt-3">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-muted">{{ __('profile.need_justifications_title') }}</p>
+
+                            @if ($need->documents->isEmpty())
+                                <p class="mt-1.5 text-xs text-muted">{{ __('profile.need_no_justifications') }}</p>
+                            @else
+                                <ul class="mt-1.5 space-y-1.5">
+                                    @foreach ($need->documents as $document)
+                                        <li class="flex items-center justify-between gap-2 text-xs">
+                                            <a href="{{ $document->file_url }}" target="_blank" class="font-medium text-primary hover:underline">
+                                                {{ $document->title ?: $document->original_name }}
+                                            </a>
+                                            <form
+                                                method="POST" action="{{ route('profile.documents.destroy', $document) }}"
+                                                data-confirm="{{ __('profile.delete_document_confirm') }}"
+                                                data-confirm-button="{{ __('messages.delete') }}"
+                                                data-cancel-button="{{ __('messages.cancel') }}"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="font-medium text-accent hover:underline">
+                                                    {{ __('messages.delete') }}
+                                                </button>
+                                            </form>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
                             <form
-                                method="POST" action="{{ route('profile.documents.destroy', $document) }}"
-                                data-confirm="{{ __('profile.delete_document_confirm') }}"
-                                data-confirm-button="{{ __('messages.delete') }}"
-                                data-cancel-button="{{ __('messages.cancel') }}"
+                                method="POST" action="{{ route('profile.documents.store') }}" enctype="multipart/form-data"
+                                class="mt-2 flex flex-wrap items-center gap-2"
                             >
                                 @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-sm font-medium text-accent hover:underline">
-                                    {{ __('messages.delete') }}
+                                <input type="hidden" name="document_type" value="need_justification">
+                                <input type="hidden" name="related_type" value="need">
+                                <input type="hidden" name="related_id" value="{{ $need->id }}">
+                                <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required class="text-xs">
+                                <button type="submit" class="rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary-light">
+                                    <i class="bi bi-upload"></i> {{ __('profile.upload_document') }}
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </li>
                 @endforeach
-            </div>
+            </ul>
         @endif
-
-        <form method="POST" action="{{ route('profile.documents.store') }}" enctype="multipart/form-data" class="mt-4 space-y-4 rounded-2xl border border-border bg-surface p-6">
-            @csrf
-            <input type="hidden" name="document_type" value="need_justification">
-
-            <div>
-                <label class="block text-sm font-medium text-text">{{ __('profile.document_title_label') }}</label>
-                <input type="text" name="title" class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-text">{{ __('profile.document_file_label') }}</label>
-                <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required class="mt-1 block w-full text-sm">
-            </div>
-
-            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark">
-                <i class="bi bi-upload"></i> {{ __('profile.upload_document') }}
-            </button>
-        </form>
     </div>
 @endsection

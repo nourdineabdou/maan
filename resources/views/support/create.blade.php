@@ -22,6 +22,15 @@
     <form method="POST" action="{{ route('support.store') }}" class="mt-6 max-w-2xl space-y-4 rounded-2xl border border-border bg-surface p-6">
         @csrf
 
+        @if ($relatedType)
+            <input type="hidden" name="related_type" value="{{ $relatedType }}">
+            <input type="hidden" name="related_id" value="{{ $relatedId }}">
+            <p class="text-xs font-medium text-primary">
+                {{ __('support.related_to_label') }}
+                {{ $relatedType === 'problematic' ? __('memberships.section_problematics') : __('memberships.section_population_need') }}
+            </p>
+        @endif
+
         <div>
             <label class="block text-sm font-medium text-text">{{ __('support.label_subject') }}</label>
             <input type="text" name="subject" value="{{ old('subject') }}" required

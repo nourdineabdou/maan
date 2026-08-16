@@ -10,6 +10,12 @@ return [
     'filter_all_statuses' => 'جميع الحالات',
     'filter_region' => 'الولاية',
     'filter_all_regions' => 'جميع الولايات',
+    'filter_date_from' => 'من',
+    'filter_date_to' => 'إلى',
+    'filter_declaration_status' => 'الحالة',
+    'filter_all_declaration_statuses' => 'جميع الحالات',
+    'filter_problematic_type' => 'نوع الانشغال',
+    'filter_all_problematic_types' => 'جميع الأنواع',
     'apply_filters' => 'تصفية',
 
     'column_registration_number' => 'رقم التسجيل',
@@ -39,11 +45,15 @@ return [
 
     'flash_approved' => 'تم قبول الانتساب. الرقم التسلسلي المخصص: :number.',
     'flash_rejected' => 'تم رفض طلب الانتساب.',
+    'flash_status_updated' => 'تم تحديث الحالة.',
 
     'approved_notification_title' => 'تم قبول الانتساب',
     'approved_notification_body' => 'تم قبول طلب انتسابك. رقمك التسلسلي: :number.',
     'rejected_notification_title' => 'تم رفض الانتساب',
     'rejected_notification_body' => 'تم رفض طلب انتسابك. السبب: :reason',
+
+    'declaration_status_notification_title' => 'تحديث بخصوص تصريحك',
+    'declaration_status_notification_body' => '":label" أصبحت الآن: :status.',
 
     'section_personal_info' => 'المعلومات الشخصية',
     'section_geographic_info' => 'المعلومات الجغرافية',
@@ -76,4 +86,14 @@ return [
 
     'reviewed_by' => 'تمت المعالجة من قبل',
     'rejection_reason' => 'سبب الرفض',
+
+    'declared_needs_title' => 'الاحتياجات المصرح بها',
+    'declared_problematics_title' => 'الانشغالات المصرح بها',
+    'column_member' => 'العضو',
+    'column_description' => 'الوصف',
+    'column_problematic' => 'الانشغال',
+    'column_priority' => 'الأولوية',
+    'column_date' => 'التاريخ',
+    'no_declared_needs' => 'لم يتم تسجيل أي حاجة حتى الآن.',
+    'no_declared_problematics' => 'لم يتم تسجيل أي انشغال حتى الآن.',
 ];

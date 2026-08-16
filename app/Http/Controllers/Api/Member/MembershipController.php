@@ -18,7 +18,7 @@ class MembershipController extends ApiController
         $membership = $draftService->draftFor($request->user());
 
         return response()->json([
-            'data' => MembershipResource::make($membership->load(['problematics', 'documents', 'statusHistories'])),
+            'data' => MembershipResource::make($membership->load(['problematics', 'needs', 'documents', 'statusHistories'])),
             'meta' => ['missing_fields' => $draftService->missingFieldsFor($request->user())],
         ]);
     }
@@ -71,6 +71,7 @@ class MembershipController extends ApiController
                 ],
                 sender: $user,
                 actionUrl: route('admin.memberships.show', $membership),
+                data: ['type' => 'admin_membership', 'id' => $membership->id],
             );
         }
 

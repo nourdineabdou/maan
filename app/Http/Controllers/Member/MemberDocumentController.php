@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Member;
 
+use App\Http\Controllers\Concerns\ResolvesDeclarationRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\DocumentUploadRequest;
 use App\Models\MemberDocument;
@@ -13,6 +14,8 @@ use Illuminate\View\View;
 
 class MemberDocumentController extends Controller
 {
+    use ResolvesDeclarationRelation;
+
     public function index(Request $request, MembershipDraftService $draftService): View
     {
         $membership = $draftService->draftFor($request->user());
@@ -29,6 +32,12 @@ class MemberDocumentController extends Controller
         $file = $request->file('file');
         $path = $file->store('documents', 'public');
 
+        $relation = $this->resolveDeclarationRelation(
+            $membership,
+            $request->input('related_type'),
+            $request->input('related_id') ? (int) $request->input('related_id') : null,
+        );
+
         $membership->documents()->create([
             'document_type' => $request->input('document_type'),
             'title' => $request->input('title'),
@@ -36,6 +45,7 @@ class MemberDocumentController extends Controller
             'original_name' => $file->getClientOriginalName(),
             'mime_type' => $file->getClientMimeType(),
             'file_size' => $file->getSize(),
+            ...$relation,
         ]);
 
         // La photo de profil (avatar, affichée partout dans l'appli) et le

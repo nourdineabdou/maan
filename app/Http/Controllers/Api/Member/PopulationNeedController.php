@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Member;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\MembershipResource;
+use App\Http\Resources\MembershipNeedResource;
 use App\Models\Membership;
 use App\Models\User;
 use App\Services\MembershipDraftService;
@@ -13,29 +13,32 @@ use Illuminate\Http\Request;
 
 class PopulationNeedController extends ApiController
 {
-    public function show(Request $request, MembershipDraftService $draftService): JsonResponse
+    public function index(Request $request, MembershipDraftService $draftService): JsonResponse
     {
         $membership = $draftService->draftFor($request->user());
 
-        return response()->json(['data' => MembershipResource::make($membership)]);
+        return response()->json([
+            'data' => MembershipNeedResource::collection($membership->needs()->latest()->with('documents')->get()),
+        ]);
     }
 
-    public function update(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): JsonResponse
+    public function store(Request $request, MembershipDraftService $draftService, NotificationService $notificationService): JsonResponse
     {
         $user = $request->user();
         $membership = $draftService->draftFor($user);
 
         $data = $request->validate([
-            'population_needs' => ['nullable', 'string', 'max:5000'],
+            'description' => ['required', 'string', 'max:5000'],
         ]);
 
-        $membership->update($data);
+        $need = $membership->needs()->create([
+            'description' => $data['description'],
+            'status' => 'submitted',
+        ]);
 
-        if (! empty($data['population_needs'])) {
-            $this->notifyAdmins($notificationService, $user, $membership);
-        }
+        $this->notifyAdmins($notificationService, $user, $membership);
 
-        return response()->json(['data' => MembershipResource::make($membership->refresh())]);
+        return response()->json(['data' => MembershipNeedResource::make($need)], 201);
     }
 
     private function notifyAdmins(NotificationService $notificationService, User $user, Membership $membership): void
@@ -58,6 +61,7 @@ class PopulationNeedController extends ApiController
             ],
             sender: $user,
             actionUrl: route('admin.memberships.show', $membership),
+            data: ['type' => 'admin_membership', 'id' => $membership->id],
         );
     }
 }

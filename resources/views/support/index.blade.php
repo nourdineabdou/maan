@@ -35,6 +35,9 @@
                         </span>
                     </div>
                     <p class="mt-1 text-sm text-muted line-clamp-1">{{ $message->body }}</p>
+                    @if ($message->relatedLabel())
+                        <p class="mt-1 text-xs font-medium text-primary">{{ __('support.related_to_label') }} {{ $message->relatedLabel() }}</p>
+                    @endif
                     <p class="mt-2 text-xs text-muted">{{ $message->created_at->format('d/m/Y H:i') }}</p>
                 </a>
             @endforeach
