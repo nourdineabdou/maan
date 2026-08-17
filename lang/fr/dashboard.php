@@ -23,4 +23,9 @@ return [
     'admin_rejected' => 'Rejetées',
 
     'quick_actions' => 'Actions rapides',
+
+    'declarations_title' => 'Déclarations',
+    'needs_title' => 'Besoins',
+    'problematics_title' => 'Problématiques',
+    'declarations_total' => ':count au total',
 ];

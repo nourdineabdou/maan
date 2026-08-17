@@ -23,4 +23,9 @@ return [
     'admin_rejected' => 'المرفوضة',
 
     'quick_actions' => 'إجراءات سريعة',
+
+    'declarations_title' => 'التصريحات',
+    'needs_title' => 'الاحتياجات',
+    'problematics_title' => 'الانشغالات',
+    'declarations_total' => ':count بالمجموع',
 ];

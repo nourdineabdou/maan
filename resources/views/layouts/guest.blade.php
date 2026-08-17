@@ -10,17 +10,34 @@
 </head>
 <body class="min-h-screen bg-background text-text antialiased">
     <div class="flex min-h-screen flex-col lg:flex-row">
-        {{-- Panneau de marque (desktop uniquement) --}}
+        {{--
+            Panneau de marque (desktop uniquement). Utilise logo_{fr,ar}_emblem.png
+            (juste le blason circulaire, sans le nom de la plateforme en dessous)
+            plutôt que logo_fr.png/logo_ar.png : le nom est écrit en vert foncé
+            dans ces fichiers, illisible sur ce fond dégradé vert foncé — le nom
+            en blanc ci-dessous (balise h1) le remplace avec un vrai contraste.
+        --}}
         <div class="relative hidden overflow-hidden bg-linear-to-br from-primary-dark via-primary to-primary-dark lg:flex lg:w-5/12 lg:flex-col lg:justify-between lg:p-10 xl:w-1/2">
             <div class="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-secondary/25 blur-3xl"></div>
             <div class="pointer-events-none absolute -start-16 bottom-10 h-64 w-64 rounded-full bg-accent/20 blur-3xl"></div>
+            <div class="pointer-events-none absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(currentColor 1px, transparent 1px); background-size: 22px 22px; color: white;"></div>
 
             <div class="relative z-10">
-                <img
-                    src="{{ asset(app()->getLocale() === 'ar' ? 'logo_ar.png' : 'logo_fr.png') }}"
-                    alt="{{ __('messages.platform_name') }}"
-                    class="animate-logo-fall h-44 w-auto drop-shadow-xl"
-                >
+                <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/90 backdrop-blur-sm">
+                    <span class="flex h-1.5 w-1.5 rounded-full bg-secondary"></span>
+                    {{ __('messages.platform_name') }}
+                </span>
+            </div>
+
+            <div class="relative z-10 flex flex-1 items-center">
+                <div class="relative">
+                    <div class="pointer-events-none absolute inset-0 -m-6 rounded-full bg-white/10 blur-2xl"></div>
+                    <img
+                        src="{{ asset(app()->getLocale() === 'ar' ? 'logo_ar_emblem.png' : 'logo_fr_emblem.png') }}"
+                        alt="{{ __('messages.platform_name') }}"
+                        class="animate-logo-fall relative h-40 w-40 drop-shadow-xl"
+                    >
+                </div>
             </div>
 
             <div class="relative z-10 mt-auto">

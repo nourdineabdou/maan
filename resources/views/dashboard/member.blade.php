@@ -61,4 +61,29 @@
             </div>
         @endif
     </div>
+
+    @if ($membership)
+        <div class="mt-8">
+            <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted">
+                <i class="bi bi-flag-fill"></i> {{ __('dashboard.declarations_title') }}
+            </h2>
+
+            <div class="mt-3 grid gap-4 sm:grid-cols-2">
+                @include('dashboard.partials.declarations-card', [
+                    'title' => __('dashboard.needs_title'),
+                    'icon' => 'bi-hand-thumbs-up-fill',
+                    'badgeClass' => 'bg-linear-to-br from-primary/20 to-primary/5 text-primary',
+                    'counts' => $needCounts,
+                    'route' => 'profile.declarations.needs',
+                ])
+                @include('dashboard.partials.declarations-card', [
+                    'title' => __('dashboard.problematics_title'),
+                    'icon' => 'bi-flag-fill',
+                    'badgeClass' => 'bg-linear-to-br from-secondary/25 to-secondary/5 text-secondary',
+                    'counts' => $problematicCounts,
+                    'route' => 'profile.declarations.problematics',
+                ])
+            </div>
+        </div>
+    @endif
 @endsection
