@@ -4,6 +4,7 @@ return [
 
     'title' => 'بطاقة العضوية',
     'member_label' => 'عضو',
+    'ambassador_label' => 'سفير',
     'matricule_label' => 'الرقم التسلسلي الفريد',
     'member_since' => 'عضو منذ',
     'signature_label' => 'التوقيع',

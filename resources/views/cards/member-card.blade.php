@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="flex-1">
-                    <p class="text-lg font-bold uppercase tracking-wide text-primary">{{ __('card.member_label') }}</p>
+                    <p class="text-lg font-bold uppercase tracking-wide text-primary">{{ $isAmbassador ? __('card.ambassador_label') : __('card.member_label') }}</p>
                     <p class="mt-0.5 text-sm font-semibold text-text">{{ $profile?->full_name ?? $membership->user->name }}</p>
 
                     <p class="mt-3 text-[10px] font-medium uppercase tracking-wide text-muted">

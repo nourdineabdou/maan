@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDocumentController as WebAdminDocumentController;
 use App\Http\Controllers\Admin\AdminExportController;
+use App\Http\Controllers\Api\Admin\AmbassadorRequestController as AdminAmbassadorRequestController;
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\CommuneController as AdminCommuneController;
 use App\Http\Controllers\Api\Admin\DeclarationController as AdminDeclarationController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Api\Admin\SupportController as AdminSupportController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Member\AccountController;
+use App\Http\Controllers\Api\Member\AmbassadorRequestController as MemberAmbassadorRequestController;
 use App\Http\Controllers\Api\Member\DeclarationController as MemberDeclarationController;
 use App\Http\Controllers\Api\Member\DocumentController as MemberDocumentController;
 use App\Http\Controllers\Api\Member\MembershipController as MemberMembershipController;
@@ -95,6 +97,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/membership', [MemberMembershipController::class, 'show']);
         Route::post('/me/membership/submit', [MemberMembershipController::class, 'submit']);
 
+        Route::get('/me/ambassador-request', [MemberAmbassadorRequestController::class, 'show']);
+        Route::post('/me/ambassador-request/request', [MemberAmbassadorRequestController::class, 'request']);
+
         Route::get('/me/card', [MembershipCardController::class, 'showJson']);
         Route::get('/me/card/pdf', [MembershipCardController::class, 'download'])->name('api.me.card.pdf');
 
@@ -111,6 +116,11 @@ Route::prefix('v1')->group(function () {
             Route::get('/statistics', [AdminStatisticsController::class, 'index']);
 
             Route::get('/members', [AdminMemberController::class, 'index']);
+
+            Route::get('/ambassador-requests', [AdminAmbassadorRequestController::class, 'index']);
+            Route::get('/ambassador-requests/{ambassadorRequest}', [AdminAmbassadorRequestController::class, 'show']);
+            Route::post('/ambassador-requests/{ambassadorRequest}/approve', [AdminAmbassadorRequestController::class, 'approve']);
+            Route::post('/ambassador-requests/{ambassadorRequest}/reject', [AdminAmbassadorRequestController::class, 'reject']);
 
             Route::get('/memberships', [AdminMembershipController::class, 'index']);
             Route::get('/memberships/{membership}', [AdminMembershipController::class, 'show']);

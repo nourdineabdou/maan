@@ -74,6 +74,7 @@ class MembershipCardController extends Controller
                 'full_name' => $membership->user->profile?->full_name ?? $membership->user->display_name,
                 'photo_url' => $membership->user->profile?->photo_url,
                 'card_generated_at' => $membership->card_generated_at,
+                'is_ambassador' => $membership->user->isAmbassador(),
                 'verify_url' => route('membership.verify', $membership->qr_token),
                 'download_pdf_url' => $membership->user_id === request()->user()?->id
                     ? route('api.me.card.pdf')
@@ -94,6 +95,7 @@ class MembershipCardController extends Controller
             'membership' => $membership->load('user.profile.region'),
             'qrDataUri' => $this->qrDataUri($membership),
             'downloadUrl' => $downloadUrl,
+            'isAmbassador' => $membership->user->isAmbassador(),
         ]);
     }
 
@@ -117,6 +119,7 @@ class MembershipCardController extends Controller
             'logoDataUri' => $this->logoDataUri(),
             'photoDataUri' => $this->photoDataUri($membership),
             'signatureDataUri' => $this->signatureDataUri(),
+            'isAmbassador' => $membership->user->isAmbassador(),
         ])->render();
 
         $mpdf = new Mpdf([

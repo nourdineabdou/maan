@@ -13,6 +13,7 @@
         ['label' => __('members.nav_my_declared_problematics'), 'icon' => 'bi-list-check', 'route' => 'profile.declarations.problematics'],
         ['label' => __('members.nav_my_documents'), 'icon' => 'bi-file-earmark-text', 'route' => 'profile.documents.index'],
         ['label' => __('members.nav_my_card'), 'icon' => 'bi-postcard', 'route' => 'card.show'],
+        ['label' => __('members.nav_ambassador'), 'icon' => 'bi-award', 'route' => 'profile.ambassador'],
         ['label' => __('members.nav_my_notifications'), 'icon' => 'bi-bell', 'route' => 'notifications.index'],
         ['label' => __('members.nav_support'), 'icon' => 'bi-chat-dots', 'route' => 'support.index'],
         ['label' => __('members.nav_settings'), 'icon' => 'bi-gear', 'route' => 'settings.edit'],
@@ -33,7 +34,8 @@
         ['label' => __('members.nav_admin_support'), 'icon' => 'bi-chat-dots', 'route' => 'admin.support.index', 'permission' => 'support_messages.manage'],
         ['label' => __('members.nav_statistics'), 'icon' => 'bi-graph-up', 'href' => '#', 'permission' => 'statistics.view'],
         ['label' => __('members.nav_exports'), 'icon' => 'bi-download', 'route' => 'admin.exports.index', 'permission' => 'members.export'],
-        ['label' => __('members.nav_users'), 'icon' => 'bi-person-gear', 'href' => '#', 'permission' => 'users.manage'],
+        ['label' => __('members.nav_users'), 'icon' => 'bi-person-gear', 'route' => 'admin.users.index', 'permission' => 'users.manage'],
+        ['label' => __('members.nav_ambassadors'), 'icon' => 'bi-award', 'route' => 'admin.ambassadors.index', 'permission' => 'ambassadors.view'],
         ['label' => __('members.nav_roles'), 'icon' => 'bi-shield-lock', 'href' => '#', 'permission' => 'roles.manage'],
         ['label' => __('members.nav_admin_settings'), 'icon' => 'bi-gear', 'route' => 'settings.edit', 'permission' => 'settings.manage'],
     ];

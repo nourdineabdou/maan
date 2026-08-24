@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAmbassadorController;
 use App\Http\Controllers\Admin\AdminAnnouncementController;
 use App\Http\Controllers\Admin\AdminCommuneController;
 use App\Http\Controllers\Admin\AdminDeclarationController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminProblematicController;
 use App\Http\Controllers\Admin\AdminRegionController;
 use App\Http\Controllers\Admin\AdminSupportMessageController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
@@ -20,6 +22,7 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Member\MemberDeclarationController;
 use App\Http\Controllers\Member\MemberDocumentController;
 use App\Http\Controllers\Member\MemberProblematicController;
+use App\Http\Controllers\Member\MyAmbassadorRequestController;
 use App\Http\Controllers\Member\MyMembershipController;
 use App\Http\Controllers\Member\PersonalInfoController;
 use App\Http\Controllers\Member\PopulationNeedController;
@@ -89,6 +92,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/membership', [MyMembershipController::class, 'show'])->name('membership');
         Route::post('/membership/submit', [MyMembershipController::class, 'submit'])->name('membership.submit');
+
+        Route::get('/ambassador', [MyAmbassadorRequestController::class, 'show'])->name('ambassador');
+        Route::post('/ambassador/request', [MyAmbassadorRequestController::class, 'store'])->name('ambassador.request');
     });
 
     Route::prefix('notifications')->name('notifications.')->group(function () {
@@ -115,6 +121,14 @@ Route::middleware('auth')->group(function () {
                 ->name('members.card.pdf');
 
             Route::get('/members', [AdminMemberController::class, 'index'])->name('members.index');
+
+            Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+            Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+
+            Route::get('/ambassadors', [AdminAmbassadorController::class, 'index'])->name('ambassadors.index');
+            Route::get('/ambassadors/{ambassadorRequest}', [AdminAmbassadorController::class, 'show'])->name('ambassadors.show');
+            Route::post('/ambassadors/{ambassadorRequest}/approve', [AdminAmbassadorController::class, 'approve'])->name('ambassadors.approve');
+            Route::post('/ambassadors/{ambassadorRequest}/reject', [AdminAmbassadorController::class, 'reject'])->name('ambassadors.reject');
 
             Route::get('/memberships', [AdminMembershipController::class, 'index'])
                 ->name('memberships.index');

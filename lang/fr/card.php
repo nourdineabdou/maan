@@ -4,6 +4,7 @@ return [
 
     'title' => 'Carte de membre',
     'member_label' => 'MEMBRE',
+    'ambassador_label' => 'AMBASSADEUR',
     'matricule_label' => 'MATRICULE UNIQUE',
     'member_since' => 'Membre depuis',
     'signature_label' => 'Signature',

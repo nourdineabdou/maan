@@ -14,6 +14,7 @@ return [
     'nav_my_declared_problematics' => 'Mes problématiques déclarées',
     'nav_my_documents' => 'Mes documents',
     'nav_my_card' => 'Ma carte de membre',
+    'nav_ambassador' => 'Devenir ambassadeur',
     'nav_my_notifications' => 'Mes notifications',
     'nav_support' => 'Contacter l\'administration',
     'nav_settings' => 'Paramètres',
@@ -41,6 +42,7 @@ return [
     'nav_statistics' => 'Statistiques',
     'nav_exports' => 'Exports',
     'nav_users' => 'Utilisateurs',
+    'nav_ambassadors' => 'Demandes ambassadeur',
     'nav_roles' => 'Rôles et permissions',
     'nav_admin_settings' => 'Paramètres',
 

@@ -57,7 +57,9 @@
                         </button>
                     </form>
                 @endcan
+            @endif
 
+            @if (in_array($membership->status, ['pending', 'approved'], true))
                 @can('memberships.reject')
                     <button
                         type="button" id="reject-btn"

@@ -33,6 +33,9 @@ class RolePermissionSeeder extends Seeder
         'users.manage',
         'roles.manage',
         'settings.manage',
+        'ambassadors.view',
+        'ambassadors.approve',
+        'ambassadors.reject',
     ];
 
     public function run(): void
@@ -47,5 +50,10 @@ class RolePermissionSeeder extends Seeder
         // Le membre n'a aucune permission Spatie : son accès est limité par
         // ownership (ses propres données), pas par un système de permissions.
         Role::firstOrCreate(['name' => 'membre', 'guard_name' => 'web']);
+
+        // Idem pour l'ambassadeur : il reste un membre (mêmes accès), le rôle
+        // ne sert qu'à distinguer le libellé de sa carte et le workflow de
+        // demande/validation du statut ambassadeur.
+        Role::firstOrCreate(['name' => 'ambassadeur', 'guard_name' => 'web']);
     }
 }

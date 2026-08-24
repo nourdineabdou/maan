@@ -44,7 +44,15 @@
       "Bash(unlink \"c:/laragon/www/ensemble-republique/storage/app/need-page.html\")",
       "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan tinker --execute=\" *)",
       "Bash(node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --noEmit -p tsconfig.json)",
-      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -l \"c:/laragon/www/ensemble-republique/app/Http/Controllers/MembershipCardController.php\")"
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -l \"c:/laragon/www/ensemble-republique/app/Http/Controllers/MembershipCardController.php\")",
+      "Bash(php -l app/Http/Controllers/Admin/AdminUserController.php)",
+      "Bash(php -l lang/fr/admin_users.php)",
+      "Bash(php -l lang/ar/admin_users.php)",
+      "Bash(php -l routes/web.php)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts\\)\\); console.log\\(!!p.devDependencies?.typescript, p.devDependencies?.typescript\\)\")",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(!!p.devDependencies?.eslint, JSON.stringify\\(Object.keys\\(p.devDependencies||{}\\).filter\\(k=>k.includes\\('eslint'\\)\\)\\)\\)\")"
     ],
     "additionalDirectories": [
       "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp"

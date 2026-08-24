@@ -40,7 +40,7 @@
                 @endif
 
                 <div class="flex items-center justify-between border-b border-border pb-2 text-sm">
-                    <span class="text-muted">{{ __('card.member_label') }}</span>
+                    <span class="text-muted">{{ $isAmbassador ? __('card.ambassador_label') : __('card.member_label') }}</span>
                     <span class="font-medium text-text">{{ $profile?->full_name ?? $membership->user->name }}</span>
                 </div>
 

@@ -61,6 +61,21 @@ class User extends Authenticatable
         return $this->hasOne(Membership::class)->latestOfMany();
     }
 
+    public function ambassadorRequests(): HasMany
+    {
+        return $this->hasMany(AmbassadorRequest::class);
+    }
+
+    public function latestAmbassadorRequest(): HasOne
+    {
+        return $this->hasOne(AmbassadorRequest::class)->latestOfMany();
+    }
+
+    public function isAmbassador(): bool
+    {
+        return $this->hasRole('ambassadeur');
+    }
+
     public function notificationRecipients(): HasMany
     {
         return $this->hasMany(NotificationRecipient::class);

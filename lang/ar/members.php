@@ -14,6 +14,7 @@ return [
     'nav_my_declared_problematics' => 'انشغالاتي المصرح بها',
     'nav_my_documents' => 'وثائقي',
     'nav_my_card' => 'بطاقة عضويتي',
+    'nav_ambassador' => 'أصبح سفيراً',
     'nav_my_notifications' => 'إشعاراتي',
     'nav_support' => 'التواصل مع الإدارة',
     'nav_settings' => 'الإعدادات',
@@ -39,6 +40,7 @@ return [
     'nav_statistics' => 'الإحصائيات',
     'nav_exports' => 'التصدير',
     'nav_users' => 'المستخدمون',
+    'nav_ambassadors' => 'طلبات السفراء',
     'nav_roles' => 'الأدوار والصلاحيات',
     'nav_admin_settings' => 'الإعدادات',
 

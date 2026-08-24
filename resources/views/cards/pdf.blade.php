@@ -107,7 +107,7 @@
                         @endif
                     </td>
                     <td class="info">
-                        <div class="member-label">{{ __('card.member_label') }}</div>
+                        <div class="member-label">{{ $isAmbassador ? __('card.ambassador_label') : __('card.member_label') }}</div>
                         <div class="name">{{ $profile?->full_name ?? $membership->user->name }}</div>
                         <div class="matricule-value">{{ $membership->member_number }}</div>
                     </td>

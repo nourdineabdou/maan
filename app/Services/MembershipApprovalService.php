@@ -59,6 +59,7 @@ class MembershipApprovalService
                 'rejection_reason' => $reason,
                 'rejected_at' => now(),
                 'reviewed_by' => $reviewer?->id,
+                'card_is_active' => false,
             ]);
 
             MembershipStatusHistory::create([

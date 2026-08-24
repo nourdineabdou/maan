@@ -28,6 +28,7 @@ class MembershipVerificationController extends Controller
         return view('membership.verify', [
             'membership' => $membership,
             'status' => $status,
+            'isAmbassador' => $membership?->user->isAmbassador() ?? false,
         ]);
     }
 }
