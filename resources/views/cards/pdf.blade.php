@@ -18,18 +18,35 @@
             background: #ffffff;
             color: #1f2937;
         }
+        {{--
+            La carte est un gabarit graphique fixe (photo/matricule/QR/
+            signature toujours au même endroit), pas un bloc de texte : sans
+            dir="ltr" explicite ici, mPDF inverse l'ordre des colonnes de ses
+            tableaux internes en arabe (SetDirectionality('rtl') côté
+            contrôleur), ce qui déplaçait la photo, le QR et la signature de
+            l'autre côté de la carte selon la langue. Seuls les libellés
+            restent traduits ; la mise en page reste identique fr/ar.
+        --}}
         .card {
             width: {{ $cardWidth }}pt;
             border: 1.5pt solid #1b5e3a;
             border-radius: 12pt;
             box-sizing: border-box;
             overflow: hidden;
+            direction: ltr;
         }
         .header {
             border-bottom: 1.5pt solid #1b5e3a;
             padding: 12pt;
         }
-        .header img { height: 30pt; width: 30pt; border-radius: 50%; border: 0.75pt solid #e5e7eb; vertical-align: middle; }
+        {{--
+            L'emblème est déjà découpé en cercle (alpha transparent hors du
+            disque, cf. MembershipCardController::circularMask()) : la bordure
+            ronde ici n'est qu'une garniture décorative, elle ne dépend plus
+            du support incertain de border-radius+overflow sur mPDF pour que
+            le logo reste visible et rond.
+        --}}
+        .header img { height: 34pt; width: 34pt; border-radius: 50%; border: 0.75pt solid #e5e7eb; vertical-align: middle; background: #ffffff; }
         .header .brand {
             display: inline-block;
             vertical-align: middle;
@@ -70,17 +87,9 @@
             padding: 12pt;
         }
         .footer table { width: 100%; }
-        {{--
-            mPDF inverse l'ordre des colonnes du tableau quand le document est
-            RTL (colonne "qr" ci-dessous affichée à droite, "sign-col" à
-            gauche) mais ne touche pas au text-align de leur contenu : sans ce
-            sens explicite, la signature restait alignée à droite de sa
-            propre cellule, donc collée au centre de la carte plutôt qu'au
-            vrai bord gauche.
-        --}}
-        .footer .qr { text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; }
+        .footer .qr { text-align: left; }
         .footer .qr img { display: block; }
-        .sign-col { text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; vertical-align: bottom; }
+        .sign-col { text-align: right; vertical-align: bottom; }
         .sign-line { border-bottom: 0.75pt solid #6b7280; width: 72pt; height: 18pt; display: inline-block; }
         .sign-image { height: 24pt; width: auto; max-width: 72pt; display: inline-block; }
         .signature-label { display: block; margin-top: 3pt; font-size: 7.5pt; color: #6b7280; }
@@ -88,7 +97,7 @@
 </head>
 <body>
     @php $profile = $membership->user->profile; @endphp
-    <div class="card">
+    <div class="card" dir="ltr">
         <div class="header">
             @if ($logoDataUri)
                 <img src="{{ $logoDataUri }}" alt="logo">

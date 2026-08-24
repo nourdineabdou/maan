@@ -52,7 +52,23 @@
       "Bash(node -e ' *)",
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts\\)\\); console.log\\(!!p.devDependencies?.typescript, p.devDependencies?.typescript\\)\")",
       "Bash(echo \"EXIT CODE: $?\")",
-      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(!!p.devDependencies?.eslint, JSON.stringify\\(Object.keys\\(p.devDependencies||{}\\).filter\\(k=>k.includes\\('eslint'\\)\\)\\)\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(!!p.devDependencies?.eslint, JSON.stringify\\(Object.keys\\(p.devDependencies||{}\\).filter\\(k=>k.includes\\('eslint'\\)\\)\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p=JSON.parse\\(fs.readFileSync\\(0,'utf8'\\)\\); console.log\\(JSON.stringify\\(p.scripts\\)\\)\")",
+      "Bash(python3 -c \"import fitz; print\\('pymupdf available'\\)\")",
+      "Bash(node -e \"console.log\\(require.resolve\\('pdfjs-dist'\\)\\)\")",
+      "Bash(cp public/logo_fr.png public/logo_fr_old_backup.png)",
+      "Bash(cp public/logo_ar.png public/logo_ar_old_backup.png)",
+      "Bash(cp public/logo_fr_new.png public/logo_fr.png)",
+      "Bash(cp public/logo_ar_new.png public/logo_ar.png)",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\" http://ensemble-republique.test/login)",
+      "Bash(command -v chromium-cli)",
+      "Read(//c//**)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(node screenshot_logos.mjs)",
+      "Bash(git status *)",
+      "Bash(rm -f public/logo_fr_old_backup.png public/logo_ar_old_backup.png)",
+      "Bash(rm -f storage/app/card_newlogo_fr.pdf storage/app/card_newlogo_ar.pdf)",
+      "Bash(rm -f \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_fr.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_ar.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/screenshot_logos.mjs\")"
     ],
     "additionalDirectories": [
       "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp"

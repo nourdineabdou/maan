@@ -215,13 +215,12 @@ class MembershipCardController extends Controller
     }
 
     /**
-     * logo_fr.png/logo_ar.png sont le logo institutionnel complet (emblème
-     * circulaire + nom de la plateforme en dessous, sur fond transparent),
-     * pensés pour un usage en pleine largeur — pas pour l'avatar rond de
-     * l'en-tête de la carte. Sans ce recadrage, écraser ces ~1536×1024px
-     * dans un cercle de 30pt déforme l'emblème et rend le texte en dessous
-     * illisible. On isole donc d'abord le carré contenant l'emblème avant
-     * de le redimensionner.
+     * logo_fr.png/logo_ar.png sont le logo institutionnel complet (blason +
+     * nom de la plateforme en dessous), pensés pour un usage en pleine
+     * largeur — pas pour l'avatar rond de l'en-tête de la carte. Sans ce
+     * recadrage, écraser ces ~1254×1254px dans un cercle de 34pt déforme le
+     * blason et rend le texte en dessous illisible. On isole donc d'abord le
+     * carré contenant le blason avant de le redimensionner.
      */
     private function logoDataUri(): string
     {
@@ -232,7 +231,49 @@ class MembershipCardController extends Controller
             return '';
         }
 
-        return $this->resizedImageDataUri($this->cropLogoEmblem(file_get_contents($path)), 120);
+        $emblem = $this->circularMask($this->cropLogoEmblem(file_get_contents($path)));
+
+        return $this->resizedImageDataUri($emblem, 160);
+    }
+
+    /**
+     * mPDF ne clippe pas correctement border-radius sur un <img> (le carré
+     * reste visible autour de l'emblème, rendu flou/peu visible) : on
+     * applique donc le masque circulaire directement dans le PNG plutôt que
+     * de compter sur le CSS.
+     */
+    private function circularMask(string $contents): string
+    {
+        $source = @imagecreatefromstring($contents);
+
+        if ($source === false) {
+            return $contents;
+        }
+
+        $size = min(imagesx($source), imagesy($source));
+        $radius = $size / 2;
+
+        imagealphablending($source, false);
+        imagesavealpha($source, true);
+        $transparent = imagecolorallocatealpha($source, 0, 0, 0, 127);
+
+        for ($y = 0; $y < $size; $y++) {
+            for ($x = 0; $x < $size; $x++) {
+                $dx = $x - $radius;
+                $dy = $y - $radius;
+
+                if (($dx * $dx + $dy * $dy) > ($radius * $radius)) {
+                    imagesetpixel($source, $x, $y, $transparent);
+                }
+            }
+        }
+
+        ob_start();
+        imagepng($source, null, 6);
+        $data = ob_get_clean();
+        imagedestroy($source);
+
+        return $data;
     }
 
     private function cropLogoEmblem(string $contents): string
@@ -245,10 +286,11 @@ class MembershipCardController extends Controller
 
         $width = imagesx($source);
         $height = imagesy($source);
-        // L'emblème occupe environ les 3/5 supérieurs du canevas (le reste
-        // étant le nom de la plateforme sous le cercle) — ratio vérifié sur
-        // logo_fr.png/logo_ar.png, pas une valeur générique.
-        $side = (int) round($height * 0.6);
+        // Le blason (couronne de laurier + silhouettes) occupe environ les
+        // 65% supérieurs du canevas (le reste étant le nom de la plateforme
+        // sous le blason) — ratio vérifié sur logo_fr.png/logo_ar.png, pas
+        // une valeur générique.
+        $side = (int) round($height * 0.65);
         $x = (int) round(($width - $side) / 2);
 
         $crop = imagecreatetruecolor($side, $side);
