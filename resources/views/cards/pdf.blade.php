@@ -70,7 +70,14 @@
             color: #6b7280;
         }
         .photo img { width: 60pt; height: 72pt; object-fit: cover; border-radius: 6pt; }
-        .info { padding-left: 12pt; display: table-cell; vertical-align: top; width: {{ $cardWidth - 12 - 60 - 24 }}pt; }
+        {{--
+            direction:ltr sur .card (cf. plus haut) fixe l'ordre des colonnes
+            mais fait aussi hériter un text-align par défaut à gauche à tous
+            les descendants — sans ce text-align explicite, le nom/matricule
+            arabe se retrouvait collé à gauche de sa colonne au lieu de se
+            lire naturellement depuis la droite.
+        --}}
+        .info { padding-left: 12pt; display: table-cell; vertical-align: top; width: {{ $cardWidth - 12 - 60 - 24 }}pt; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; }
         .member-label { font-size: 13.5pt; font-weight: bold; color: #1b5e3a; text-transform: uppercase; letter-spacing: 0.4pt; }
         .name {
             font-size: 10.5pt;
