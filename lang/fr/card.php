@@ -7,7 +7,7 @@ return [
     'ambassador_label' => 'AMBASSADEUR',
     'matricule_label' => 'MATRICULE UNIQUE',
     'member_since' => 'Membre depuis',
-    'signature_label' => 'Signature',
+    'stamp_label' => 'Cachet officiel',
     'download_pdf' => 'Télécharger en PDF',
     'print' => 'Imprimer',
     'not_available' => 'Votre carte de membre n\'est pas encore disponible : votre adhésion doit d\'abord être validée.',

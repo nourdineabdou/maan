@@ -48,12 +48,14 @@
                 <img src="{{ $qrDataUri }}" alt="QR" class="h-16 w-16">
 
                 <div class="text-end">
-                    <div class="flex h-6 w-24 items-end justify-end border-b border-muted">
-                        @if (file_exists(public_path('signature.png')))
-                            <img src="{{ asset('signature.png') }}" alt="{{ __('card.signature_label') }}" class="h-8 w-auto max-w-full object-contain">
-                        @endif
-                    </div>
-                    <p class="mt-1 text-[10px] text-muted">{{ __('card.signature_label') }}</p>
+                    @if (file_exists(public_path('watermark_stamp.png')))
+                        <img
+                            src="{{ asset('watermark_stamp.png') }}"
+                            alt="{{ __('card.stamp_label') }}"
+                            class="ms-auto h-14 w-14 object-contain"
+                        >
+                    @endif
+                    <p class="mt-1 text-[10px] text-muted">{{ __('card.stamp_label') }}</p>
                 </div>
             </div>
         </div>

@@ -20,10 +20,10 @@
         }
         {{--
             La carte est un gabarit graphique fixe (photo/matricule/QR/
-            signature toujours au même endroit), pas un bloc de texte : sans
+            cachet toujours au même endroit), pas un bloc de texte : sans
             dir="ltr" explicite ici, mPDF inverse l'ordre des colonnes de ses
             tableaux internes en arabe (SetDirectionality('rtl') côté
-            contrôleur), ce qui déplaçait la photo, le QR et la signature de
+            contrôleur), ce qui déplaçait la photo, le QR et le cachet de
             l'autre côté de la carte selon la langue. Seuls les libellés
             restent traduits ; la mise en page reste identique fr/ar.
         --}}
@@ -89,10 +89,15 @@
         .footer table { width: 100%; }
         .footer .qr { text-align: left; }
         .footer .qr img { display: block; }
-        .sign-col { text-align: right; vertical-align: bottom; }
-        .sign-line { border-bottom: 0.75pt solid #6b7280; width: 72pt; height: 18pt; display: inline-block; }
-        .sign-image { height: 24pt; width: auto; max-width: 72pt; display: inline-block; }
-        .signature-label { display: block; margin-top: 3pt; font-size: 7.5pt; color: #6b7280; }
+        .stamp-col { text-align: right; vertical-align: bottom; }
+        {{--
+            stamp-image est déjà un disque semi-transparent avec coins alpha
+            (cf. MembershipCardController::stampDataUri()) : pas de bordure ni
+            de fond ici, pour garder l'effet "tampon encré posé sur la carte"
+            plutôt qu'un badge encadré comme le logo de l'en-tête.
+        --}}
+        .stamp-image { width: 42pt; height: 42pt; display: inline-block; }
+        .stamp-label { display: block; margin-top: 3pt; font-size: 7.5pt; color: #6b7280; }
     </style>
 </head>
 <body>
@@ -134,13 +139,11 @@
                             style="width: {{ $qrSize }}pt; height: {{ $qrSize }}pt;"
                         >
                     </td>
-                    <td class="sign-col">
-                        @if ($signatureDataUri)
-                            <img src="{{ $signatureDataUri }}" alt="" class="sign-image"><br>
-                        @else
-                            <div class="sign-line"></div><br>
+                    <td class="stamp-col">
+                        @if ($stampDataUri)
+                            <img src="{{ $stampDataUri }}" alt="" class="stamp-image"><br>
                         @endif
-                        <span class="signature-label">{{ __('card.signature_label') }}</span>
+                        <span class="stamp-label">{{ __('card.stamp_label') }}</span>
                     </td>
                 </tr>
             </table>

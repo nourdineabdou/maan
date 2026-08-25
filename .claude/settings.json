@@ -68,10 +68,25 @@
       "Bash(git status *)",
       "Bash(rm -f public/logo_fr_old_backup.png public/logo_ar_old_backup.png)",
       "Bash(rm -f storage/app/card_newlogo_fr.pdf storage/app/card_newlogo_ar.pdf)",
-      "Bash(rm -f \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_fr.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_ar.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/screenshot_logos.mjs\")"
+      "Bash(rm -f \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_fr.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/login_ar.png\" \"/c/Users/KTB i3 Good One/AppData/Local/Temp/screenshot_logos.mjs\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('expo:', p.dependencies.expo\\); console.log\\('react-native:', p.dependencies['react-native']\\);\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.dependencies['react-native-web'] || 'NOT FOUND'\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); console.log\\(JSON.parse\\(fs.readFileSync\\(0,'utf8'\\)\\).expo.web || 'no web config'\\)\")",
+      "Bash(node screenshot_header.mjs)",
+      "Bash(node test_ar_click.mjs)",
+      "Bash(node screenshot_header_ar.mjs)",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\" http://localhost:8098 --max-time 10)",
+      "Bash(powershell -Command 'Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '\\\\''*expo start*'\\\\'' -or $_.CommandLine -like '\\\\''*8098*'\\\\'' } | Select-Object ProcessId, CommandLine')",
+      "Bash(powershell -Command \"Stop-Process -Id 3652,13200,5208,12920,12848 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\" http://localhost:8098 --max-time 3)",
+      "Bash(rm -f \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/header_*.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/before_click.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/after_click.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/screenshot_header*.mjs \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/test_ar_click.mjs \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/expo_web.log)",
+      "Bash(node screenshot_stamp.mjs 1)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('eas-cli dep:', p.devDependencies?.['eas-cli'] || p.dependencies?.['eas-cli'] || 'not in package.json'\\)\")",
+      "Bash(npx eas *)"
     ],
     "additionalDirectories": [
-      "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp"
+      "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp",
+      "c:\\laragon\\www\\ensemble-republique-mobile"
     ]
   }
 }

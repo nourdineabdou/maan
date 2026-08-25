@@ -118,7 +118,7 @@ class MembershipCardController extends Controller
             'cardWidth' => self::CARD_WIDTH_PT,
             'logoDataUri' => $this->logoDataUri(),
             'photoDataUri' => $this->photoDataUri($membership),
-            'signatureDataUri' => $this->signatureDataUri(),
+            'stampDataUri' => $this->stampDataUri(),
             'isAmbassador' => $membership->user->isAmbassador(),
         ])->render();
 
@@ -240,9 +240,11 @@ class MembershipCardController extends Controller
      * mPDF ne clippe pas correctement border-radius sur un <img> (le carré
      * reste visible autour de l'emblème, rendu flou/peu visible) : on
      * applique donc le masque circulaire directement dans le PNG plutôt que
-     * de compter sur le CSS.
+     * de compter sur le CSS. $opacity (0-1) réduit en plus l'alpha des
+     * pixels conservés — utilisé pour le cachet officiel, qui doit se
+     * fondre sur la carte comme un vrai tampon plutôt qu'un autocollant opaque.
      */
-    private function circularMask(string $contents): string
+    private function circularMask(string $contents, float $opacity = 1.0): string
     {
         $source = @imagecreatefromstring($contents);
 
@@ -264,6 +266,13 @@ class MembershipCardController extends Controller
 
                 if (($dx * $dx + $dy * $dy) > ($radius * $radius)) {
                     imagesetpixel($source, $x, $y, $transparent);
+                } elseif ($opacity < 1.0) {
+                    $rgba = imagecolorat($source, $x, $y);
+                    $alpha = ($rgba >> 24) & 0x7F;
+                    $opaqueness = (127 - $alpha) / 127;
+                    $newAlpha = (int) round(127 - ($opaqueness * $opacity * 127));
+                    $color = imagecolorallocatealpha($source, ($rgba >> 16) & 0xFF, ($rgba >> 8) & 0xFF, $rgba & 0xFF, $newAlpha);
+                    imagesetpixel($source, $x, $y, $color);
                 }
             }
         }
@@ -309,15 +318,61 @@ class MembershipCardController extends Controller
         return $data;
     }
 
-    private function signatureDataUri(): ?string
+    /**
+     * Cachet officiel affiché à l'emplacement historiquement réservé à la
+     * signature manuscrite : watermark.png contient déjà le tampon rond
+     * (texte fr/ar circulaire) centré dans un canevas plus large, avec une
+     * marge blanche autour. On recadre ce disque puis on le rend
+     * légèrement translucide (cf. circularMask) pour un rendu de vrai
+     * tampon encré plutôt qu'un autocollant plaqué sur la carte.
+     */
+    private function stampDataUri(): ?string
     {
-        $path = public_path('signature.png');
+        $path = public_path('watermark.png');
 
         if (! is_file($path)) {
             return null;
         }
 
-        return $this->resizedImageDataUri(file_get_contents($path), 200);
+        $stamp = $this->circularMask($this->cropAndResizeStamp(file_get_contents($path), 240), 0.8);
+
+        return $this->resizedImageDataUri($stamp, 240);
+    }
+
+    /**
+     * Recadre un carré centré (le tampon occupe ~90% de la plus petite
+     * dimension du canevas source, marge blanche vérifiée sur watermark.png)
+     * et redimensionne en un seul passage GD — plus rapide qu'un recadrage
+     * pleine résolution suivi d'un masque circulaire pixel par pixel.
+     */
+    private function cropAndResizeStamp(string $contents, int $targetSize): string
+    {
+        $source = @imagecreatefromstring($contents);
+
+        if ($source === false) {
+            return $contents;
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        $side = (int) round(min($width, $height) * 0.9);
+        $x = (int) round(($width - $side) / 2);
+        $y = (int) round(($height - $side) / 2);
+
+        $resized = imagecreatetruecolor($targetSize, $targetSize);
+        imagealphablending($resized, false);
+        imagesavealpha($resized, true);
+        $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
+        imagefill($resized, 0, 0, $transparent);
+        imagecopyresampled($resized, $source, 0, 0, $x, $y, $targetSize, $targetSize, $side, $side);
+        imagedestroy($source);
+
+        ob_start();
+        imagepng($resized, null, 6);
+        $data = ob_get_clean();
+        imagedestroy($resized);
+
+        return $data;
     }
 
     private function photoDataUri(Membership $membership): ?string

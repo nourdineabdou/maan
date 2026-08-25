@@ -7,7 +7,7 @@ return [
     'ambassador_label' => 'سفير',
     'matricule_label' => 'الرقم التسلسلي الفريد',
     'member_since' => 'عضو منذ',
-    'signature_label' => 'التوقيع',
+    'stamp_label' => 'الختم الرسمي',
     'download_pdf' => 'تحميل بصيغة PDF',
     'print' => 'طباعة',
     'not_available' => 'بطاقة عضويتك غير متوفرة بعد: يجب أولاً التحقق من طلب انتسابك.',
