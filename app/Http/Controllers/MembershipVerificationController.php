@@ -28,7 +28,7 @@ class MembershipVerificationController extends Controller
         return view('membership.verify', [
             'membership' => $membership,
             'status' => $status,
-            'isAmbassador' => $membership?->user->isAmbassador() ?? false,
+            'roleLabel' => $membership ? $membership->user->roleLabel() : __('card.member_label'),
         ]);
     }
 }

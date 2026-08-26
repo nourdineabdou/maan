@@ -5,6 +5,7 @@ return [
     'title' => 'Carte de membre',
     'member_label' => 'MEMBRE',
     'ambassador_label' => 'AMBASSADEUR',
+    'ambassador_label_female' => 'AMBASSADRICE',
     'matricule_label' => 'MATRICULE UNIQUE',
     'member_since' => 'Membre depuis',
     'stamp_label' => 'Cachet officiel',

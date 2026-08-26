@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\MembershipResource;
+use App\Models\AmbassadorRequest;
 use App\Models\Membership;
 use App\Models\MembershipNeed;
 use App\Models\MembershipProblematic;
@@ -24,6 +25,7 @@ class DashboardController extends ApiController
                     'pending_count' => Membership::where('status', 'pending')->count(),
                     'approved_count' => Membership::where('status', 'approved')->count(),
                     'rejected_count' => Membership::where('status', 'rejected')->count(),
+                    'pending_ambassador_count' => AmbassadorRequest::where('status', 'pending')->count(),
                     'need_counts' => $this->statusCounts(MembershipNeed::query()),
                     'problematic_counts' => $this->statusCounts(MembershipProblematic::query()),
                 ],

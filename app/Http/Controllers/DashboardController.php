@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AmbassadorRequest;
 use App\Models\Membership;
 use App\Models\MembershipNeed;
 use App\Models\MembershipProblematic;
@@ -22,6 +23,7 @@ class DashboardController extends Controller
                 'pendingCount' => Membership::where('status', 'pending')->count(),
                 'approvedCount' => Membership::where('status', 'approved')->count(),
                 'rejectedCount' => Membership::where('status', 'rejected')->count(),
+                'pendingAmbassadorCount' => AmbassadorRequest::where('status', 'pending')->count(),
                 'stats' => $statistics->summary(),
                 'needCounts' => $this->statusCounts(MembershipNeed::query()),
                 'problematicCounts' => $this->statusCounts(MembershipProblematic::query()),

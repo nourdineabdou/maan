@@ -21,6 +21,7 @@ return [
     'admin_pending' => 'قيد الانتظار',
     'admin_approved' => 'المقبولة',
     'admin_rejected' => 'المرفوضة',
+    'admin_pending_ambassadors' => 'طلبات السفراء قيد الانتظار',
 
     'quick_actions' => 'إجراءات سريعة',
 

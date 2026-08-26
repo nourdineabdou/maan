@@ -5,6 +5,7 @@ return [
     'title' => 'بطاقة العضوية',
     'member_label' => 'عضو',
     'ambassador_label' => 'سفير',
+    'ambassador_label_female' => 'سفيرة',
     'matricule_label' => 'الرقم التسلسلي الفريد',
     'member_since' => 'عضو منذ',
     'stamp_label' => 'الختم الرسمي',

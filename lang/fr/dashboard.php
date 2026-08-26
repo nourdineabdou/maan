@@ -21,6 +21,7 @@ return [
     'admin_pending' => 'En attente',
     'admin_approved' => 'Validées',
     'admin_rejected' => 'Rejetées',
+    'admin_pending_ambassadors' => 'Demandes ambassadeur en attente',
 
     'quick_actions' => 'Actions rapides',
 

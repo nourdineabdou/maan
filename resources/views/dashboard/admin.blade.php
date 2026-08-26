@@ -8,7 +8,7 @@
         <p class="mt-1 text-sm text-muted">{{ __('dashboard.welcome_back', ['name' => auth()->user()->display_name]) }}</p>
     </div>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 {{ auth()->user()->can('ambassadors.view') ? 'xl:grid-cols-5' : '' }}">
         <a
             href="{{ route('admin.members.index') }}"
             class="group rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
@@ -52,6 +52,19 @@
             <p class="mt-4 text-3xl font-bold text-text">{{ $rejectedCount }}</p>
             <p class="mt-1 text-sm text-muted">{{ __('dashboard.admin_rejected') }}</p>
         </a>
+
+        @can('ambassadors.view')
+            <a
+                href="{{ route('admin.ambassadors.index', ['status' => 'pending']) }}"
+                class="group rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-secondary hover:shadow-md"
+            >
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-br from-secondary/25 to-secondary/5 text-secondary shadow-sm">
+                    <i class="bi bi-award text-xl"></i>
+                </span>
+                <p class="mt-4 text-3xl font-bold text-text">{{ $pendingAmbassadorCount }}</p>
+                <p class="mt-1 text-sm text-muted">{{ __('dashboard.admin_pending_ambassadors') }}</p>
+            </a>
+        @endcan
     </div>
 
     <div class="mt-8">

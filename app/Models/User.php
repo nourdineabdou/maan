@@ -76,6 +76,21 @@ class User extends Authenticatable
         return $this->hasRole('ambassadeur');
     }
 
+    /**
+     * Libellé de rôle affiché sur la carte de membre (accordé au genre pour
+     * les ambassadeurs — "AMBASSADRICE" pour les femmes).
+     */
+    public function roleLabel(): string
+    {
+        if (! $this->isAmbassador()) {
+            return __('card.member_label');
+        }
+
+        return $this->profile?->gender === 'female'
+            ? __('card.ambassador_label_female')
+            : __('card.ambassador_label');
+    }
+
     public function notificationRecipients(): HasMany
     {
         return $this->hasMany(NotificationRecipient::class);

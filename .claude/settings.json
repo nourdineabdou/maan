@@ -82,7 +82,14 @@
       "Bash(rm -f \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/header_*.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/before_click.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/after_click.png \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/screenshot_header*.mjs \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/test_ar_click.mjs \"/c/Users/KTB i3 Good One/AppData/Local/Temp\"/expo_web.log)",
       "Bash(node screenshot_stamp.mjs 1)",
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('eas-cli dep:', p.devDependencies?.['eas-cli'] || p.dependencies?.['eas-cli'] || 'not in package.json'\\)\")",
-      "Bash(npx eas *)"
+      "Bash(npx eas *)",
+      "Bash(xargs grep -L \"onBack\\\\|onMenuPress\")",
+      "Bash(node screenshot_header2.mjs)",
+      "Bash(xargs grep -l \"adjustsFontSizeToFit\")",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\" http://localhost:8098 --max-time 5)",
+      "Bash(powershell -Command 'Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '\\\\''*8098*'\\\\'' } | Select-Object ProcessId, CommandLine')",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\" http://localhost:8098 --max-time 15)",
+      "Bash(node screenshot_compact.mjs)"
     ],
     "additionalDirectories": [
       "c:\\laragon\\www\\ensemble-republique\\storage\\app\\tmp",
