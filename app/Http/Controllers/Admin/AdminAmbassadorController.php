@@ -45,6 +45,7 @@ class AdminAmbassadorController extends Controller
     public function approve(Request $request, AmbassadorRequest $ambassadorRequest, AmbassadorApprovalService $approvalService, NotificationService $notificationService): RedirectResponse
     {
         abort_unless($request->user()->can('ambassadors.approve'), 403);
+        abort_if($ambassadorRequest->user_id === $request->user()->id, 403, __('ambassadors.cannot_review_own'));
 
         $approvalService->approve($ambassadorRequest, $request->user());
 
@@ -70,6 +71,8 @@ class AdminAmbassadorController extends Controller
 
     public function reject(RejectAmbassadorRequest $request, AmbassadorRequest $ambassadorRequest, AmbassadorApprovalService $approvalService, NotificationService $notificationService): RedirectResponse
     {
+        abort_if($ambassadorRequest->user_id === $request->user()->id, 403, __('ambassadors.cannot_review_own'));
+
         $reason = $request->string('reason')->toString();
 
         $approvalService->reject($ambassadorRequest, $reason, $request->user());

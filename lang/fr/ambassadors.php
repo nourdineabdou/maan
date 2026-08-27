@@ -44,4 +44,5 @@ return [
 
     'empty' => 'Aucune demande ambassadeur pour le moment.',
     'reviewed_by' => 'Traité par',
+    'cannot_review_own' => 'Vous ne pouvez pas valider ou rejeter votre propre demande ambassadeur.',
 ];

@@ -29,6 +29,7 @@ return [
     'nav_memberships' => 'الانتسابات',
     'nav_members' => 'الأعضاء',
     'nav_validations' => 'التحقق والمصادقة',
+    'nav_validations_log' => 'سجل متابعة القرارات',
     'nav_documents' => 'الوثائق',
     'nav_regions' => 'الولايات',
     'nav_declared_needs' => 'الاحتياجات المصرح بها',
@@ -64,4 +65,5 @@ return [
 
     'role_administrateur' => 'مسؤول',
     'role_membre' => 'عضو',
+    'role_moderateur' => 'مشرف',
 ];

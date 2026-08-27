@@ -1,5 +1,5 @@
 @php
-    $isAdmin = auth()->user()->hasRole('administrateur');
+    $isAdmin = auth()->user()->hasAnyRole(['administrateur', 'moderateur']);
 
     $memberLinks = [
         ['label' => __('members.nav_dashboard'), 'icon' => 'bi-speedometer2', 'route' => 'dashboard'],
@@ -24,6 +24,7 @@
         ['label' => __('members.nav_memberships'), 'icon' => 'bi-card-checklist', 'route' => 'admin.memberships.index', 'permission' => 'members.view'],
         ['label' => __('members.nav_members'), 'icon' => 'bi-people', 'route' => 'admin.members.index', 'permission' => 'members.view'],
         ['label' => __('members.nav_validations'), 'icon' => 'bi-patch-check', 'route' => 'admin.memberships.index', 'params' => ['status' => 'pending'], 'permission' => 'memberships.approve'],
+        ['label' => __('members.nav_validations_log'), 'icon' => 'bi-clock-history', 'route' => 'admin.memberships.audit', 'permission' => 'memberships.audit'],
         ['label' => __('members.nav_documents'), 'icon' => 'bi-file-earmark-text', 'route' => 'admin.documents.index', 'permission' => 'documents.view'],
         ['label' => __('members.nav_regions'), 'icon' => 'bi-map', 'route' => 'admin.regions.index', 'permission' => 'regions.manage'],
         ['label' => __('members.nav_declared_needs'), 'icon' => 'bi-megaphone', 'route' => 'admin.declarations.needs', 'permission' => 'problematics.manage'],

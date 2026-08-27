@@ -9,6 +9,24 @@ use Spatie\Permission\Models\Role;
 class RolePermissionSeeder extends Seeder
 {
     /**
+     * Permissions accordées au modérateur : juste de quoi instruire et
+     * valider/rejeter les adhésions des autres membres (pas la gestion des
+     * comptes, des rôles, des paramètres, etc. — ça reste réservé à
+     * l'administrateur).
+     */
+    private const MODERATOR_PERMISSIONS = [
+        'members.view',
+        'documents.view',
+        'documents.verify',
+        'memberships.approve',
+        'memberships.reject',
+        'support_messages.manage',
+        'ambassadors.view',
+        'ambassadors.approve',
+        'ambassadors.reject',
+    ];
+
+    /**
      * Permissions du cahier des charges (section 25), par ressource.
      */
     private const PERMISSIONS = [
@@ -20,6 +38,7 @@ class RolePermissionSeeder extends Seeder
         'documents.verify',
         'memberships.approve',
         'memberships.reject',
+        'memberships.audit',
         'memberships.request_completion',
         'memberships.suspend',
         'cards.print',
@@ -55,5 +74,11 @@ class RolePermissionSeeder extends Seeder
         // ne sert qu'à distinguer le libellé de sa carte et le workflow de
         // demande/validation du statut ambassadeur.
         Role::firstOrCreate(['name' => 'ambassadeur', 'guard_name' => 'web']);
+
+        // Un membre à qui l'admin a délégué l'instruction des adhésions :
+        // accède à la zone /admin (cf. middleware role:administrateur|moderateur)
+        // mais seulement aux sections couvertes par ses permissions.
+        $moderateur = Role::firstOrCreate(['name' => 'moderateur', 'guard_name' => 'web']);
+        $moderateur->syncPermissions(self::MODERATOR_PERMISSIONS);
     }
 }

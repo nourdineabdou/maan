@@ -89,6 +89,7 @@ class MembershipController extends ApiController
     public function approve(Request $request, Membership $membership, MembershipApprovalService $approvalService, NotificationService $notificationService): JsonResponse
     {
         abort_unless($request->user()->can('memberships.approve'), 403);
+        abort_if($membership->user_id === $request->user()->id, 403, __('memberships.cannot_review_own'));
 
         $approvalService->approve($membership, $request->user());
 
@@ -112,6 +113,8 @@ class MembershipController extends ApiController
 
     public function reject(RejectMembershipRequest $request, Membership $membership, MembershipApprovalService $approvalService, NotificationService $notificationService): JsonResponse
     {
+        abort_if($membership->user_id === $request->user()->id, 403, __('memberships.cannot_review_own'));
+
         $reason = $request->string('reason')->toString();
 
         $approvalService->reject($membership, $reason, $request->user());

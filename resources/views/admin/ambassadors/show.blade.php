@@ -11,6 +11,7 @@
             default => 'bg-secondary/20 text-secondary',
         };
         $na = __('ambassadors.not_provided');
+        $isOwnRequest = $ambassadorRequest->user_id === auth()->id();
     @endphp
 
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -40,7 +41,7 @@
                 {{ __('dashboard.status_'.$ambassadorRequest->status) }}
             </span>
 
-            @if ($ambassadorRequest->status === 'pending')
+            @if (! $isOwnRequest && $ambassadorRequest->status === 'pending')
                 @can('ambassadors.approve')
                     <form
                         method="POST" action="{{ route('admin.ambassadors.approve', $ambassadorRequest) }}"
@@ -57,7 +58,7 @@
                 @endcan
             @endif
 
-            @if (in_array($ambassadorRequest->status, ['pending', 'approved'], true))
+            @if (! $isOwnRequest && in_array($ambassadorRequest->status, ['pending', 'approved'], true))
                 @can('ambassadors.reject')
                     <button
                         type="button" id="reject-btn"
@@ -77,6 +78,12 @@
     @if ($ambassadorRequest->status === 'rejected' && $ambassadorRequest->rejection_reason)
         <div class="mt-4 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-accent">
             <strong>{{ __('ambassadors.rejection_reason') }} :</strong> {{ $ambassadorRequest->rejection_reason }}
+        </div>
+    @endif
+
+    @if ($isOwnRequest && in_array($ambassadorRequest->status, ['pending', 'approved'], true))
+        <div class="mt-4 rounded-lg border border-secondary/40 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            {{ __('ambassadors.cannot_review_own') }}
         </div>
     @endif
 

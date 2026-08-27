@@ -111,7 +111,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/{message}/reply', [MemberMessageController::class, 'reply'])->name('reply');
     });
 
-    Route::middleware('role:administrateur')
+    Route::middleware('role:administrateur|moderateur')
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
             Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+            Route::post('/users/moderators', [AdminUserController::class, 'storeModerator'])->name('users.moderators.store');
+            Route::delete('/users/moderators/{user}', [AdminUserController::class, 'destroyModerator'])->name('users.moderators.destroy');
 
             Route::get('/ambassadors', [AdminAmbassadorController::class, 'index'])->name('ambassadors.index');
             Route::get('/ambassadors/{ambassadorRequest}', [AdminAmbassadorController::class, 'show'])->name('ambassadors.show');
@@ -132,6 +134,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/memberships', [AdminMembershipController::class, 'index'])
                 ->name('memberships.index');
+            Route::get('/memberships-audit', [AdminMembershipController::class, 'auditLog'])
+                ->name('memberships.audit');
             Route::get('/memberships/{membership}', [AdminMembershipController::class, 'show'])
                 ->name('memberships.show');
             Route::post('/memberships/{membership}/approve', [AdminMembershipController::class, 'approve'])

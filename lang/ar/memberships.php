@@ -44,6 +44,7 @@ return [
     'reject_modal_required' => 'سبب الرفض إلزامي.',
 
     'flash_approved' => 'تم قبول الانتساب. الرقم التسلسلي المخصص: :number.',
+    'cannot_review_own' => 'لا يمكنك قبول أو رفض طلب انتسابك الخاص.',
     'flash_rejected' => 'تم رفض طلب الانتساب.',
     'flash_status_updated' => 'تم تحديث الحالة.',
 
@@ -96,4 +97,15 @@ return [
     'column_date' => 'التاريخ',
     'no_declared_needs' => 'لم يتم تسجيل أي حاجة حتى الآن.',
     'no_declared_problematics' => 'لم يتم تسجيل أي انشغال حتى الآن.',
+
+    'audit_title' => 'سجل متابعة القرارات',
+    'audit_subtitle' => 'سجل من قام بقبول أو رفض كل طلب انتساب.',
+    'filter_reviewer' => 'تمت المعالجة من قبل',
+    'filter_all_reviewers' => 'جميع المتدخلين',
+    'column_action' => 'الإجراء',
+    'column_reviewed_by' => 'تمت المعالجة من قبل',
+    'column_reason' => 'السبب',
+    'action_approved' => 'تم القبول',
+    'action_rejected' => 'تم الرفض',
+    'no_audit_results' => 'لا يوجد أي قبول أو رفض مسجَّل حتى الآن.',
 ];

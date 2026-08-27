@@ -17,10 +17,10 @@ class DashboardController extends ApiController
     {
         $user = $request->user();
 
-        if ($user->hasRole('administrateur')) {
+        if ($user->hasAnyRole(['administrateur', 'moderateur'])) {
             return response()->json([
                 'data' => [
-                    'role' => 'administrateur',
+                    'role' => $user->hasRole('administrateur') ? 'administrateur' : 'moderateur',
                     'total_members' => Membership::count(),
                     'pending_count' => Membership::where('status', 'pending')->count(),
                     'approved_count' => Membership::where('status', 'approved')->count(),

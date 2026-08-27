@@ -31,6 +31,7 @@ return [
     'nav_memberships' => 'Adhésions',
     'nav_members' => 'Membres',
     'nav_validations' => 'Validations',
+    'nav_validations_log' => 'Suivi des validations',
     'nav_documents' => 'Documents',
     'nav_regions' => 'Régions',
     'nav_declared_needs' => 'Besoins déclarés',
@@ -66,4 +67,5 @@ return [
 
     'role_administrateur' => 'Administrateur',
     'role_membre' => 'Membre',
+    'role_moderateur' => 'Modérateur',
 ];

@@ -11,6 +11,7 @@
             default => 'bg-secondary/20 text-secondary',
         };
         $na = __('memberships.not_provided');
+        $isOwnMembership = $membership->user_id === auth()->id();
     @endphp
 
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -42,7 +43,7 @@
                 {{ __('dashboard.status_'.$membership->status) }}
             </span>
 
-            @if ($membership->status === 'pending')
+            @if (! $isOwnMembership && $membership->status === 'pending')
                 @can('memberships.approve')
                     <form
                         method="POST" action="{{ route('admin.memberships.approve', $membership) }}"
@@ -59,7 +60,7 @@
                 @endcan
             @endif
 
-            @if (in_array($membership->status, ['pending', 'approved'], true))
+            @if (! $isOwnMembership && in_array($membership->status, ['pending', 'approved'], true))
                 @can('memberships.reject')
                     <button
                         type="button" id="reject-btn"
@@ -87,6 +88,12 @@
     @if ($membership->status === 'rejected' && $membership->rejection_reason)
         <div class="mt-4 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-accent">
             <strong>{{ __('memberships.rejection_reason') }} :</strong> {{ $membership->rejection_reason }}
+        </div>
+    @endif
+
+    @if ($isOwnMembership && in_array($membership->status, ['pending', 'approved'], true))
+        <div class="mt-4 rounded-lg border border-secondary/40 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            {{ __('memberships.cannot_review_own') }}
         </div>
     @endif
 

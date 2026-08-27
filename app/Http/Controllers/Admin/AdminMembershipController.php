@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RejectMembershipRequest;
 use App\Models\Membership;
 use App\Models\MembershipNeed;
+use App\Models\MembershipStatusHistory;
 use App\Models\Problematic;
+use App\Models\User;
 use App\Services\MembershipApprovalService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
@@ -60,6 +62,36 @@ class AdminMembershipController extends Controller
         ]);
     }
 
+    public function auditLog(Request $request): View
+    {
+        abort_unless($request->user()->can('memberships.audit'), 403);
+
+        $query = MembershipStatusHistory::query()
+            ->whereIn('new_status', ['approved', 'rejected'])
+            ->with(['membership.user.profile', 'changedBy'])
+            ->latest();
+
+        if ($status = $request->string('status')->toString()) {
+            $query->where('new_status', $status);
+        }
+
+        if ($reviewerId = $request->string('reviewer')->toString()) {
+            $query->where('changed_by', $reviewerId);
+        }
+
+        return view('admin.memberships.audit', [
+            'histories' => $query->paginate(20)->withQueryString(),
+            'reviewers' => User::query()
+                ->whereIn('id', MembershipStatusHistory::query()->whereNotNull('changed_by')->distinct()->pluck('changed_by'))
+                ->orderBy('name')
+                ->get(),
+            'filters' => array_merge(
+                ['status' => '', 'reviewer' => ''],
+                $request->only(['status', 'reviewer'])
+            ),
+        ]);
+    }
+
     public function show(Request $request, Membership $membership): View
     {
         abort_unless($request->user()->can('members.view'), 403);
@@ -87,6 +119,7 @@ class AdminMembershipController extends Controller
     public function approve(Request $request, Membership $membership, MembershipApprovalService $approvalService, NotificationService $notificationService): RedirectResponse
     {
         abort_unless($request->user()->can('memberships.approve'), 403);
+        abort_if($membership->user_id === $request->user()->id, 403, __('memberships.cannot_review_own'));
 
         $approvalService->approve($membership, $request->user());
 
@@ -112,6 +145,8 @@ class AdminMembershipController extends Controller
 
     public function reject(RejectMembershipRequest $request, Membership $membership, MembershipApprovalService $approvalService, NotificationService $notificationService): RedirectResponse
     {
+        abort_if($membership->user_id === $request->user()->id, 403, __('memberships.cannot_review_own'));
+
         $reason = $request->string('reason')->toString();
 
         $approvalService->reject($membership, $reason, $request->user());

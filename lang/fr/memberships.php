@@ -44,6 +44,7 @@ return [
     'reject_modal_required' => 'Le motif est obligatoire.',
 
     'flash_approved' => 'Adhésion validée. Matricule attribué : :number.',
+    'cannot_review_own' => 'Vous ne pouvez pas valider ou rejeter votre propre adhésion.',
     'flash_rejected' => 'Adhésion rejetée.',
     'flash_status_updated' => 'Statut mis à jour.',
 
@@ -96,4 +97,15 @@ return [
     'column_date' => 'Date',
     'no_declared_needs' => 'Aucun besoin déclaré pour le moment.',
     'no_declared_problematics' => 'Aucune problématique déclarée pour le moment.',
+
+    'audit_title' => 'Suivi des validations',
+    'audit_subtitle' => 'Historique de qui a validé ou rejeté quelle adhésion.',
+    'filter_reviewer' => 'Traité par',
+    'filter_all_reviewers' => 'Tous les intervenants',
+    'column_action' => 'Action',
+    'column_reviewed_by' => 'Traité par',
+    'column_reason' => 'Motif',
+    'action_approved' => 'Validée',
+    'action_rejected' => 'Rejetée',
+    'no_audit_results' => 'Aucune validation ni aucun rejet enregistré pour le moment.',
 ];

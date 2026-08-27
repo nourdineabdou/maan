@@ -79,4 +79,60 @@
             </form>
         </section>
     </div>
+
+    <div class="mt-8">
+        <h2 class="text-lg font-semibold text-text">{{ __('admin_users.moderators_title') }}</h2>
+        <p class="mt-1 text-sm text-muted">{{ __('admin_users.moderators_subtitle') }}</p>
+    </div>
+
+    <div class="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]">
+        <section class="rounded-2xl border border-border bg-surface p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('admin_users.moderators_existing') }}</h2>
+            <div class="mt-4 space-y-3">
+                @forelse ($moderators as $moderator)
+                    <div class="flex items-center justify-between gap-3 rounded-xl border border-border px-4 py-3">
+                        <div>
+                            <p class="font-medium text-text">{{ $moderator->name }}</p>
+                            <p class="text-sm text-muted">{{ $moderator->email ?? $moderator->phone }}</p>
+                        </div>
+                        <span class="rounded-full bg-secondary/20 px-2.5 py-1 text-xs font-semibold text-secondary">
+                            {{ __('members.role_moderateur') }}
+                        </span>
+                        <form
+                            method="POST" action="{{ route('admin.users.moderators.destroy', $moderator) }}"
+                            data-confirm="{{ __('admin_users.revoke_moderator_confirm_text') }}"
+                            data-confirm-title="{{ __('admin_users.revoke_moderator_confirm_title') }}"
+                            data-confirm-button="{{ __('admin_users.revoke_moderator_confirm_button') }}"
+                            data-cancel-button="{{ __('messages.cancel') }}"
+                        >
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-sm font-medium text-accent hover:underline">
+                                {{ __('admin_users.revoke_moderator') }}
+                            </button>
+                        </form>
+                    </div>
+                @empty
+                    <p class="text-sm text-muted">{{ __('admin_users.moderators_empty') }}</p>
+                @endforelse
+            </div>
+            <div class="mt-4">{{ $moderators->links() }}</div>
+        </section>
+
+        <section class="rounded-2xl border border-border bg-surface p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-muted">{{ __('admin_users.grant_moderator') }}</h2>
+            <form method="POST" action="{{ route('admin.users.moderators.store') }}" class="mt-4 space-y-4">
+                @csrf
+                <div>
+                    <label for="identifier" class="block text-sm font-medium text-text">{{ __('admin_users.moderator_identifier_label') }}</label>
+                    <input id="identifier" name="identifier" value="{{ old('identifier') }}" required class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                    @error('identifier')<p class="mt-1 text-xs text-accent">{{ $message }}</p>@enderror
+                </div>
+                <p class="text-xs text-muted">{{ __('admin_users.moderator_identifier_hint') }}</p>
+                <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark">
+                    <i class="bi bi-shield-check"></i>{{ __('admin_users.grant_moderator_button') }}
+                </button>
+            </form>
+        </section>
+    </div>
 @endsection

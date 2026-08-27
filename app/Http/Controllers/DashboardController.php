@@ -17,7 +17,7 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        if ($user->hasRole('administrateur')) {
+        if ($user->hasAnyRole(['administrateur', 'moderateur'])) {
             return view('dashboard.admin', [
                 'totalMembers' => Membership::count(),
                 'pendingCount' => Membership::where('status', 'pending')->count(),
