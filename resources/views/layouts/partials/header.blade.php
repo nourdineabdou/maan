@@ -56,7 +56,7 @@
             <div class="hidden text-end sm:block">
                 <p class="text-sm font-medium text-white">{{ $user->display_name }}</p>
                 <p class="text-xs text-white/70">
-                    {{ $user->hasRole('administrateur') ? __('members.role_administrateur') : __('members.role_membre') }}
+                    {{ $user->hasRole('administrateur') ? __('members.role_administrateur') : ($user->hasRole('moderateur') ? __('members.role_moderateur') : __('members.role_membre')) }}
                 </p>
             </div>
 

@@ -1,5 +1,5 @@
 @php
-    $isAdmin = auth()->user()->hasRole('administrateur');
+    $isAdmin = auth()->user()->hasAnyRole(['administrateur', 'moderateur']);
 
     $tabs = [
         [

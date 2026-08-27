@@ -9,21 +9,14 @@ use Spatie\Permission\Models\Role;
 class RolePermissionSeeder extends Seeder
 {
     /**
-     * Permissions accordées au modérateur : juste de quoi instruire et
-     * valider/rejeter les adhésions des autres membres (pas la gestion des
-     * comptes, des rôles, des paramètres, etc. — ça reste réservé à
-     * l'administrateur).
+     * Le modérateur a accès à tout ce que couvre l'administrateur, à
+     * l'exception de la gestion des comptes (section "Gestion utilisateur" :
+     * création d'administrateurs/modérateurs). Défini comme la liste
+     * complète des permissions moins cette exclusion, pour rester aligné
+     * automatiquement si de nouvelles permissions sont ajoutées.
      */
-    private const MODERATOR_PERMISSIONS = [
-        'members.view',
-        'documents.view',
-        'documents.verify',
-        'memberships.approve',
-        'memberships.reject',
-        'support_messages.manage',
-        'ambassadors.view',
-        'ambassadors.approve',
-        'ambassadors.reject',
+    private const MODERATOR_EXCLUDED_PERMISSIONS = [
+        'users.manage',
     ];
 
     /**
@@ -79,6 +72,6 @@ class RolePermissionSeeder extends Seeder
         // accède à la zone /admin (cf. middleware role:administrateur|moderateur)
         // mais seulement aux sections couvertes par ses permissions.
         $moderateur = Role::firstOrCreate(['name' => 'moderateur', 'guard_name' => 'web']);
-        $moderateur->syncPermissions(self::MODERATOR_PERMISSIONS);
+        $moderateur->syncPermissions(array_diff(self::PERMISSIONS, self::MODERATOR_EXCLUDED_PERMISSIONS));
     }
 }

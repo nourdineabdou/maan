@@ -18,7 +18,7 @@ class MemberMessageReplyResource extends JsonResource
             'author' => $this->when($this->relationLoaded('author') && $this->author, fn () => [
                 'id' => $this->author->id,
                 'name' => $this->author->display_name,
-                'is_admin' => $this->author->hasRole('administrateur'),
+                'is_admin' => $this->author->hasAnyRole(['administrateur', 'moderateur']),
             ]),
             'created_at' => $this->created_at,
         ];

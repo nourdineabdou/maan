@@ -38,7 +38,7 @@
         </div>
 
         @forelse ($message->replies as $reply)
-            @php $isAdmin = $reply->author->hasRole('administrateur'); @endphp
+            @php $isAdmin = $reply->author->hasAnyRole(['administrateur', 'moderateur']); @endphp
             <div class="rounded-2xl border p-4 {{ $isAdmin ? 'border-primary bg-primary-light' : 'border-border bg-surface' }}">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold {{ $isAdmin ? 'text-primary' : 'text-text' }}">
