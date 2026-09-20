@@ -3,6 +3,8 @@
 @section('title', __('dashboard.member_title'))
 
 @section('content')
+    @include('partials.announcement-banner', ['announcement' => $announcement])
+
     <h1 class="text-xl font-semibold text-text">
         {{ __('dashboard.welcome_back', ['name' => auth()->user()->display_name]) }}
     </h1>

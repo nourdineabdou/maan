@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AccountDeletionRequestController;
+use App\Http\Controllers\SupportPageController;
 use App\Http\Controllers\Admin\AdminAmbassadorController;
 use App\Http\Controllers\Admin\AdminAnnouncementController;
 use App\Http\Controllers\Admin\AdminCommuneController;
@@ -40,6 +42,23 @@ Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.
 
 Route::get('/membership/verify/{token}', [MembershipVerificationController::class, 'show'])
     ->name('membership.verify');
+
+// Page publique requise par les stores (Google Play / App Store) : un moyen
+// de demander la suppression de son compte sans forcément pouvoir se
+// connecter (app désinstallée, accès perdu...).
+Route::get('/suppression-compte', [AccountDeletionRequestController::class, 'create'])
+    ->name('account-deletion.create');
+Route::post('/suppression-compte', [AccountDeletionRequestController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('account-deletion.store');
+
+// URL d'assistance publique requise par les stores, distincte de la
+// messagerie interne (support.*) réservée aux membres connectés.
+Route::get('/assistance', [SupportPageController::class, 'show'])->name('support-page.show');
+
+// Politique de confidentialité, requise par les stores (Google Play / App
+// Store) puisque l'app collecte des données personnelles.
+Route::view('/confidentialite', 'privacy.show')->name('privacy.show');
 
 // Données de référence publiques (aucune information sensible ni propre à un
 // utilisateur) : nécessaires dès la page d'inscription, donc accessibles

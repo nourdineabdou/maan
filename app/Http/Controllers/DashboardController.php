@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AmbassadorRequest;
+use App\Models\Announcement;
 use App\Models\Membership;
 use App\Models\MembershipNeed;
 use App\Models\MembershipProblematic;
@@ -36,6 +37,7 @@ class DashboardController extends Controller
             'membership' => $membership,
             'needCounts' => $this->statusCounts(MembershipNeed::query()->where('membership_id', $membership?->id)),
             'problematicCounts' => $this->statusCounts(MembershipProblematic::query()->where('membership_id', $membership?->id)),
+            'announcement' => Announcement::where('is_active', true)->with('images')->latest()->first(),
         ]);
     }
 
