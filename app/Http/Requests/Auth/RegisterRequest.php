@@ -41,13 +41,18 @@ class RegisterRequest extends FormRequest
             'preferred_locale' => ['required', 'in:fr,ar'],
             'terms' => ['accepted'],
 
-            'gender' => ['required', 'in:male,female'],
-            'nni' => ['required', 'digits:10', 'unique:member_profiles,nni'],
-            'region_id' => ['required', 'exists:regions,id'],
-            'moughataa_id' => ['required', 'exists:moughataas,id'],
-            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
-            'identity_card_front' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-            'identity_card_back' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            // Volontairement facultatifs (cf. MemberRegistrationService) :
+            // Apple refuse qu'une app impose ces informations sensibles dès
+            // l'inscription (guideline 5.1.1) hors d'un cadre d'organisation
+            // enregistrée. Un membre peut donc créer un compte léger, puis
+            // compléter et soumettre son adhésion plus tard depuis l'app.
+            'gender' => ['nullable', 'in:male,female'],
+            'nni' => ['nullable', 'digits:10', 'unique:member_profiles,nni'],
+            'region_id' => ['nullable', 'exists:regions,id'],
+            'moughataa_id' => ['nullable', 'exists:moughataas,id'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
+            'identity_card_front' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'identity_card_back' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ];
     }
 }

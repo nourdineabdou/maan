@@ -95,17 +95,17 @@
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_gender') }} <span class="text-accent">*</span></label>
-                    <select name="gender" required class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-                        <option value="" disabled @selected(! old('gender'))>{{ __('forms.select_placeholder') }}</option>
+                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_gender') }}</label>
+                    <select name="gender" class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                        <option value="" @selected(! old('gender'))>{{ __('forms.select_placeholder') }}</option>
                         <option value="male" @selected(old('gender') === 'male')>{{ __('forms.gender_male') }}</option>
                         <option value="female" @selected(old('gender') === 'female')>{{ __('forms.gender_female') }}</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_nni') }} <span class="text-accent">*</span></label>
-                    <input type="text" name="nni" value="{{ old('nni') }}" required
+                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_nni') }}</label>
+                    <input type="text" name="nni" value="{{ old('nni') }}"
                         inputmode="numeric" maxlength="10" pattern="[0-9]{10}"
                         class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                 </div>
@@ -113,8 +113,8 @@
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_region') }} <span class="text-accent">*</span></label>
-                    <select id="region_id" name="region_id" required class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_region') }}</label>
+                    <select id="region_id" name="region_id" class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                         <option value="">{{ __('forms.select_placeholder') }}</option>
                         @foreach ($regions as $region)
                             <option value="{{ $region->id }}" @selected(old('region_id') == $region->id)>
@@ -125,8 +125,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_moughataa') }} <span class="text-accent">*</span></label>
-                    <select id="moughataa_id" name="moughataa_id" required class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                    <label class="block text-sm font-medium text-text">{{ __('memberships.field_moughataa') }}</label>
+                    <select id="moughataa_id" name="moughataa_id" class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                         <option value="">{{ __('forms.select_placeholder') }}</option>
                     </select>
                 </div>
@@ -135,7 +135,7 @@
             <div class="grid gap-3 sm:grid-cols-3">
                 @foreach ([['name' => 'photo', 'label' => 'documents.type_member_photo', 'accept' => 'image/png,image/jpeg'], ['name' => 'identity_card_front', 'label' => 'documents.type_identity_card_front', 'accept' => '.pdf,.jpg,.jpeg,.png'], ['name' => 'identity_card_back', 'label' => 'documents.type_identity_card_back', 'accept' => '.pdf,.jpg,.jpeg,.png']] as $upload)
                     <div>
-                        <label class="block text-sm font-medium text-text">{{ __($upload['label']) }} <span class="text-accent">*</span></label>
+                        <label class="block text-sm font-medium text-text">{{ __($upload['label']) }}</label>
                         <label
                             for="upload-{{ $upload['name'] }}"
                             data-upload-picker
@@ -146,7 +146,7 @@
                         </label>
                         <input
                             type="file" id="upload-{{ $upload['name'] }}" name="{{ $upload['name'] }}"
-                            accept="{{ $upload['accept'] }}" required class="hidden" data-upload-input
+                            accept="{{ $upload['accept'] }}" class="hidden" data-upload-input
                         >
                     </div>
                 @endforeach

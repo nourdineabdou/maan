@@ -24,7 +24,7 @@ return [
     'register_subtitle' => 'Rejoignez la plateforme Ensembles pour la République.',
     'account_section_title' => 'Votre compte',
     'membership_section_title' => 'Votre dossier d\'adhésion',
-    'membership_section_hint' => 'Ces informations sont indispensables pour ouvrir votre dossier. Le reste (informations professionnelles, diplôme, CV...) pourra être complété plus tard depuis votre compte.',
+    'membership_section_hint' => "Ces informations sont facultatives à cette étape : vous pouvez créer votre compte sans elles, et les compléter plus tard depuis votre espace membre pour ouvrir votre dossier d'adhésion.",
     'name' => 'Nom complet',
     'phone' => 'Numéro de téléphone',
     'phone_placeholder' => 'Ex. 32123456',

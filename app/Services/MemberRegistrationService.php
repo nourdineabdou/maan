@@ -47,16 +47,16 @@ class MemberRegistrationService
             'nni' => $request->input('nni'),
             'region_id' => $request->input('region_id'),
             'moughataa_id' => $request->input('moughataa_id'),
-            'photo_path' => $photo->store('profiles', 'public'),
+            'photo_path' => $photo?->store('profiles', 'public'),
         ]);
 
         $membership = $this->draftService->draftFor($user);
 
-        $documents = [
+        $documents = array_filter([
             'member_photo' => $photo,
             'identity_card_front' => $request->file('identity_card_front'),
             'identity_card_back' => $request->file('identity_card_back'),
-        ];
+        ]);
 
         foreach ($documents as $documentType => $file) {
             $membership->documents()->create([
@@ -68,31 +68,46 @@ class MemberRegistrationService
             ]);
         }
 
-        $membership->update(['submitted_at' => now()]);
+        // Toutes ces informations sont désormais facultatives à l'inscription
+        // (cf. RegisterRequest) : on ne soumet le dossier à l'administration
+        // que si le membre a fourni de quoi l'examiner. Sinon, il reste en
+        // brouillon et le membre pourra le compléter puis le soumettre plus
+        // tard depuis l'espace membre (MyMembershipController::submit).
+        $isComplete = $request->input('gender')
+            && $request->input('nni')
+            && $request->input('region_id')
+            && $request->input('moughataa_id')
+            && $photo
+            && $request->file('identity_card_front')
+            && $request->file('identity_card_back');
 
-        MembershipStatusHistory::create([
-            'membership_id' => $membership->id,
-            'new_status' => 'pending',
-            'changed_by' => $user->id,
-        ]);
+        if ($isComplete) {
+            $membership->update(['submitted_at' => now()]);
 
-        $admins = User::role('administrateur')->get();
+            MembershipStatusHistory::create([
+                'membership_id' => $membership->id,
+                'new_status' => 'pending',
+                'changed_by' => $user->id,
+            ]);
 
-        if ($admins->isNotEmpty()) {
-            $this->notificationService->send(
-                recipients: $admins,
-                title: [
-                    'fr' => __('profile.submission_notification_title', [], 'fr'),
-                    'ar' => __('profile.submission_notification_title', [], 'ar'),
-                ],
-                message: [
-                    'fr' => __('profile.submission_notification_body', ['name' => $user->display_name], 'fr'),
-                    'ar' => __('profile.submission_notification_body', ['name' => $user->display_name], 'ar'),
-                ],
-                sender: $user,
-                actionUrl: route('admin.memberships.show', $membership),
-                data: ['type' => 'admin_membership', 'id' => $membership->id],
-            );
+            $admins = User::role('administrateur')->get();
+
+            if ($admins->isNotEmpty()) {
+                $this->notificationService->send(
+                    recipients: $admins,
+                    title: [
+                        'fr' => __('profile.submission_notification_title', [], 'fr'),
+                        'ar' => __('profile.submission_notification_title', [], 'ar'),
+                    ],
+                    message: [
+                        'fr' => __('profile.submission_notification_body', ['name' => $user->display_name], 'fr'),
+                        'ar' => __('profile.submission_notification_body', ['name' => $user->display_name], 'ar'),
+                    ],
+                    sender: $user,
+                    actionUrl: route('admin.memberships.show', $membership),
+                    data: ['type' => 'admin_membership', 'id' => $membership->id],
+                );
+            }
         }
 
         return $user;
