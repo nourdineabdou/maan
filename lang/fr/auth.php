@@ -25,6 +25,7 @@ return [
     'account_section_title' => 'Votre compte',
     'membership_section_title' => 'Votre dossier d\'adhésion',
     'membership_section_hint' => "Ces informations sont facultatives à cette étape : vous pouvez créer votre compte sans elles, et les compléter plus tard depuis votre espace membre pour ouvrir votre dossier d'adhésion.",
+    'documents_consent_hint' => "Facultatif. Ces documents ne sont jamais exigés pour utiliser l'application. Si vous choisissez de les envoyer, vous acceptez qu'ils soient utilisés uniquement pour vérifier votre identité dans le cadre d'une demande d'aide.",
     'name' => 'Nom complet',
     'phone' => 'Numéro de téléphone',
     'phone_placeholder' => 'Ex. 32123456',

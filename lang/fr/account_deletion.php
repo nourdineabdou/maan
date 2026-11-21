@@ -11,6 +11,7 @@ return [
     'reason' => 'Raison (optionnel)',
     'submit' => 'Envoyer la demande',
     'processing_note' => 'Votre demande sera traitée par notre équipe sous quelques jours ouvrés. Vous serez contacté(e) au moyen renseigné ci-dessus une fois la suppression effectuée.',
+    'staff_forbidden' => "Les comptes d'administration ne peuvent pas être supprimés depuis l'application.",
     'flash_submitted' => 'Votre demande de suppression a bien été enregistrée. Nous vous contacterons une fois celle-ci traitée.',
 
 ];

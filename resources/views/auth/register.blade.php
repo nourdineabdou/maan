@@ -132,6 +132,8 @@
                 </div>
             </div>
 
+            <p class="text-xs text-muted">{{ __('auth.documents_consent_hint') }}</p>
+
             <div class="grid gap-3 sm:grid-cols-3">
                 @foreach ([['name' => 'photo', 'label' => 'documents.type_member_photo', 'accept' => 'image/png,image/jpeg'], ['name' => 'identity_card_front', 'label' => 'documents.type_identity_card_front', 'accept' => '.pdf,.jpg,.jpeg,.png'], ['name' => 'identity_card_back', 'label' => 'documents.type_identity_card_back', 'accept' => '.pdf,.jpg,.jpeg,.png']] as $upload)
                     <div>

@@ -22,7 +22,11 @@ class PersonalInfoRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'gender' => ['required', 'in:male,female'],
-            'nni' => ['required', 'digits:10', 'unique:member_profiles,nni,'.$profileId],
+            // "sometimes" : l'app iOS n'envoie pas le NNI (version sans données
+            // d'identité, App Store 5.1.1(ix)) ; absent, il n'est ni validé ni
+            // écrasé. Le formulaire Web l'envoie toujours, il y reste exigé.
+            // La soumission d'adhésion l'exige de toute façon (MembershipDraftService).
+            'nni' => ['sometimes', 'required', 'digits:10', 'unique:member_profiles,nni,'.$profileId],
             'region_id' => ['required', 'exists:regions,id'],
             'moughataa_id' => ['required', 'exists:moughataas,id'],
             'birth_date' => ['nullable', 'date', 'before:today'],

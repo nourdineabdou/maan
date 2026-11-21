@@ -70,6 +70,7 @@ Route::prefix('v1')->group(function () {
 
         Route::patch('/me/locale', [AccountController::class, 'updateLocale']);
         Route::put('/me/password', [AccountController::class, 'updatePassword']);
+        Route::delete('/me', [AccountController::class, 'destroy']);
 
         Route::post('/push/subscribe', [PushSubscriptionController::class, 'subscribe']);
         Route::post('/push/unsubscribe', [PushSubscriptionController::class, 'unsubscribe']);
