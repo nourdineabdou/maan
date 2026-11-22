@@ -50,9 +50,9 @@ class RegisterRequest extends FormRequest
             'nni' => ['nullable', 'digits:10', 'unique:member_profiles,nni'],
             'region_id' => ['nullable', 'exists:regions,id'],
             'moughataa_id' => ['nullable', 'exists:moughataas,id'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
-            'identity_card_front' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-            'identity_card_back' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:20480'],
+            'identity_card_front' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:20480'],
+            'identity_card_back' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:20480'],
         ];
     }
 }

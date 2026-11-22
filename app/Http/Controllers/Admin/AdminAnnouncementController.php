@@ -125,7 +125,7 @@ class AdminAnnouncementController extends Controller
             'message_ar' => ['required', 'string', 'max:2000'],
             'is_active' => ['nullable', 'boolean'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['image', 'mimes:jpg,jpeg,png', 'max:4096'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png', 'max:20480'],
         ]);
 
         return [

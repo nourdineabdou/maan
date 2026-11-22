@@ -32,7 +32,7 @@ class PersonalInfoController extends Controller
     public function updatePhoto(Request $request, ProfilePhotoService $photoService): RedirectResponse
     {
         $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:20480'],
         ]);
 
         $photoService->update($request->user(), $request->file('photo'));

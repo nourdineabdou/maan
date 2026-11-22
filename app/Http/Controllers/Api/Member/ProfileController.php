@@ -40,7 +40,7 @@ class ProfileController extends ApiController
     public function updatePhoto(Request $request, ProfilePhotoService $photoService): JsonResponse
     {
         $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:20480'],
         ]);
 
         $profile = $photoService->update($request->user(), $request->file('photo'));
