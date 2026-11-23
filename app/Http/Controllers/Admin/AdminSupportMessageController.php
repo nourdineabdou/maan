@@ -28,7 +28,7 @@ class AdminSupportMessageController extends Controller
             'subject' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:5000'],
             'related_type' => ['nullable', 'in:problematic,need'],
-            'related_id' => ['required_with:related_type', 'integer'],
+            'related_id' => ['nullable', 'required_with:related_type', 'integer'],
         ]);
 
         $relation = $this->resolveDeclarationRelation(

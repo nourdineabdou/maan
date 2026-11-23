@@ -21,7 +21,7 @@ class DocumentUploadRequest extends FormRequest
             'title' => ['nullable', 'string', 'max:255'],
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:20480'],
             'related_type' => ['nullable', 'in:problematic,need'],
-            'related_id' => ['required_with:related_type', 'integer'],
+            'related_id' => ['nullable', 'required_with:related_type', 'integer'],
         ];
     }
 }

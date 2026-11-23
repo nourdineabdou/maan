@@ -464,20 +464,27 @@
                     <form
                         id="contact-member-form" method="POST"
                         action="{{ route('admin.memberships.contact', $membership) }}"
-                        class="mt-3 hidden space-y-3"
+                        @class(['mt-3 space-y-3', 'hidden' => ! $errors->any()])
                     >
                         @csrf
+                        @if ($errors->any())
+                            <div class="rounded-lg border border-accent/30 bg-accent/10 p-3 text-sm text-accent">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
                         <input type="hidden" name="related_type" id="contact-member-related-type">
                         <input type="hidden" name="related_id" id="contact-member-related-id">
                         <div>
                             <label class="block text-xs font-medium text-muted">{{ __('support.label_subject') }}</label>
-                            <input type="text" name="subject" id="contact-member-subject" required maxlength="255"
+                            <input type="text" name="subject" id="contact-member-subject" required maxlength="255" value="{{ old('subject') }}"
                                 class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-muted">{{ __('support.label_body') }}</label>
                             <textarea name="body" id="contact-member-body" rows="3" required
-                                class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"></textarea>
+                                class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">{{ old('body') }}</textarea>
                         </div>
                         <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark">
                             <i class="bi bi-send"></i> {{ __('support.send') }}
