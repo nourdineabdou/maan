@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'preferred_locale',
+        'registration_platform',
         'is_active',
         'phone_verified_at',
         'last_login_at',

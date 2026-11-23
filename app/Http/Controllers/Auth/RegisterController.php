@@ -31,6 +31,8 @@ class RegisterController extends Controller
     {
         $user = $registrationService->register($request);
 
+        $user->forceFill(['registration_platform' => 'web'])->save();
+
         Auth::login($user);
 
         session(['locale' => $user->preferred_locale]);

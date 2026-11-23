@@ -19,6 +19,8 @@ class AuthController extends ApiController
     {
         $user = $registrationService->register($request);
 
+        $user->forceFill(['registration_platform' => $this->clientPlatform($request)])->save();
+
         $token = $user->createToken($this->tokenName($request))->plainTextToken;
 
         return response()->json([
@@ -75,6 +77,28 @@ class AuthController extends ApiController
                 $request->user()->load(['profile.region', 'profile.moughataaRef', 'profile.communeRef'])
             ),
         ]);
+    }
+
+    /**
+     * Plateforme de l'app mobile : en-tête X-Client-Platform envoyé par
+     * l'app (builds récents), sinon déduite du user-agent pour les builds
+     * plus anciens (iOS : CFNetwork/Darwin, Android : okhttp).
+     */
+    private function clientPlatform(Request $request): ?string
+    {
+        $header = strtolower((string) $request->header('X-Client-Platform'));
+
+        if (in_array($header, ['ios', 'android'], true)) {
+            return $header;
+        }
+
+        $userAgent = (string) $request->userAgent();
+
+        return match (true) {
+            str_contains($userAgent, 'Darwin') || str_contains($userAgent, 'CFNetwork') || str_contains($userAgent, 'iPhone') => 'ios',
+            str_contains($userAgent, 'okhttp') || str_contains($userAgent, 'Android') => 'android',
+            default => null,
+        };
     }
 
     /**

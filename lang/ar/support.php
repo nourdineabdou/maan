@@ -50,4 +50,18 @@ return [
     'related_to_label' => 'بخصوص:',
     'new_thread_notification_title' => 'رسالة جديدة من الإدارة',
     'new_thread_notification_body' => 'أرسلت لك الإدارة رسالة: ":subject"',
+
+    'platform_ios' => 'مسجل عبر iPhone',
+    'platform_android' => 'مسجل عبر Android',
+    'platform_web' => 'مسجل عبر الموقع',
+    'request_identity_button' => 'طلب الرقم الوطني وبطاقة التعريف',
+    'request_identity_hint' => 'معلومات ناقصة: :items. يملأ الزر الرسالة أدناه مسبقًا؛ راجعها ثم اضغط على «إرسال».',
+    'request_identity_subject' => 'استكمال ملفك: الرقم الوطني وبطاقة التعريف',
+    'request_identity_body' => "مرحبًا :name،\n\nحتى نتمكن من دراسة طلب انتسابك، يرجى استكمال العناصر التالية على موقعنا :url (سجّل الدخول بنفس بيانات التطبيق):\n\n:items\n\nشكرًا،\nفريق معًا",
+    'request_identity_item_nni' => '• رقمك الوطني للتعريف (NNI): قسم «ملفي الشخصي > معلوماتي الشخصية»',
+    'request_identity_item_front' => '• صورة الوجه الأمامي لبطاقة تعريفك: قسم «ملفي الشخصي > وثائقي > البطاقة الوطنية (الوجه)»',
+    'request_identity_item_back' => '• صورة الوجه الخلفي لبطاقة تعريفك: قسم «ملفي الشخصي > وثائقي > البطاقة الوطنية (الظهر)»',
+    'request_identity_short_nni' => 'الرقم الوطني',
+    'request_identity_short_front' => 'البطاقة (الوجه)',
+    'request_identity_short_back' => 'البطاقة (الظهر)',
 ];

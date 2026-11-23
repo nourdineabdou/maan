@@ -50,4 +50,20 @@ return [
     'related_to_label' => 'Concernant :',
     'new_thread_notification_title' => 'Nouveau message de l\'administration',
     'new_thread_notification_body' => 'L\'administration vous a envoyé un message : ":subject"',
+
+    // Origine du compte et demande manuelle des pièces d'identité (comptes
+    // créés depuis l'app iOS, qui ne collecte ni NNI ni carte d'identité).
+    'platform_ios' => 'Inscrit via iPhone',
+    'platform_android' => 'Inscrit via Android',
+    'platform_web' => 'Inscrit via le site web',
+    'request_identity_button' => 'Demander NNI et carte d\'identité',
+    'request_identity_hint' => 'Informations manquantes : :items. Le bouton pré-remplit le message ci-dessous ; relisez-le puis cliquez sur « Envoyer ».',
+    'request_identity_subject' => 'Compléter votre dossier : NNI et carte d\'identité',
+    'request_identity_body' => "Bonjour :name,\n\nPour que nous puissions examiner votre demande d'adhésion, merci de compléter les éléments suivants sur notre site web :url (connectez-vous avec les mêmes identifiants que dans l'application) :\n\n:items\n\nMerci,\nL'équipe Maan",
+    'request_identity_item_nni' => '• Votre NNI (numéro national d\'identification) : rubrique « Mon profil > Mes informations personnelles »',
+    'request_identity_item_front' => '• La photo du RECTO de votre carte d\'identité : rubrique « Mon profil > Mes documents > CNI recto »',
+    'request_identity_item_back' => '• La photo du VERSO de votre carte d\'identité : rubrique « Mon profil > Mes documents > CNI verso »',
+    'request_identity_short_nni' => 'NNI',
+    'request_identity_short_front' => 'CNI recto',
+    'request_identity_short_back' => 'CNI verso',
 ];

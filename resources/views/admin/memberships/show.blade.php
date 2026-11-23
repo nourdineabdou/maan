@@ -12,6 +12,33 @@
         };
         $na = __('memberships.not_provided');
         $isOwnMembership = $membership->user_id === auth()->id();
+
+        // Pièces d'identité manquantes (typiquement un compte créé depuis
+        // l'app iOS, qui ne les collecte pas) : message pré-rempli dans la
+        // langue du membre, envoyé MANUELLEMENT par l'admin.
+        $registrationPlatform = $membership->user->registration_platform;
+        $memberLocale = in_array($membership->user->preferred_locale, ['fr', 'ar'], true) ? $membership->user->preferred_locale : 'fr';
+        $uploadedDocTypes = $membership->documents->pluck('document_type');
+        $missingIdentity = collect([
+            'nni' => blank($profile?->nni),
+            'front' => ! $uploadedDocTypes->contains('identity_card_front'),
+            'back' => ! $uploadedDocTypes->contains('identity_card_back'),
+        ])->filter()->keys();
+        $identityRequest = null;
+
+        if ($missingIdentity->isNotEmpty()) {
+            $identityRequest = [
+                'hint' => __('support.request_identity_hint', [
+                    'items' => $missingIdentity->map(fn ($item) => __('support.request_identity_short_'.$item))->implode(', '),
+                ]),
+                'subject' => __('support.request_identity_subject', [], $memberLocale),
+                'body' => __('support.request_identity_body', [
+                    'name' => $profile?->full_name ?? $membership->user->name,
+                    'url' => route('profile.overview'),
+                    'items' => $missingIdentity->map(fn ($item) => __('support.request_identity_item_'.$item, [], $memberLocale))->implode("\n"),
+                ], $memberLocale),
+            ];
+        }
     @endphp
 
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -34,6 +61,21 @@
                         {{ $profile?->full_name ?? $membership->user->name }}
                     </h1>
                     <p class="text-sm text-muted">{{ $membership->registration_number }}</p>
+                    @if (in_array($registrationPlatform, ['ios', 'android', 'web'], true))
+                        <span @class([
+                            'mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold',
+                            'bg-secondary/20 text-secondary' => $registrationPlatform === 'ios',
+                            'bg-background text-muted border border-border' => $registrationPlatform !== 'ios',
+                        ])>
+                            <i @class([
+                                'bi',
+                                'bi-apple' => $registrationPlatform === 'ios',
+                                'bi-android2' => $registrationPlatform === 'android',
+                                'bi-globe' => $registrationPlatform === 'web',
+                            ])></i>
+                            {{ __('support.platform_'.$registrationPlatform) }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -403,6 +445,20 @@
 
                     <p class="mt-2 text-xs text-muted">{{ __('support.contact_member_hint') }}</p>
 
+                    @if ($identityRequest)
+                        <div class="mt-3 rounded-lg border border-secondary/40 bg-secondary/10 p-3">
+                            <p class="text-xs text-text">{{ $identityRequest['hint'] }}</p>
+                            <button
+                                type="button" id="request-identity-btn"
+                                data-subject="{{ $identityRequest['subject'] }}"
+                                data-body="{{ $identityRequest['body'] }}"
+                                class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary px-3 py-1.5 text-sm font-semibold text-primary hover:underline"
+                            >
+                                <i class="bi bi-person-vcard"></i> {{ __('support.request_identity_button') }}
+                            </button>
+                        </div>
+                    @endif
+
                     <p id="contact-member-related" class="mt-2 hidden text-xs font-medium text-primary"></p>
 
                     <form
@@ -420,7 +476,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-muted">{{ __('support.label_body') }}</label>
-                            <textarea name="body" rows="3" required
+                            <textarea name="body" id="contact-member-body" rows="3" required
                                 class="mt-1 block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"></textarea>
                         </div>
                         <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark">
@@ -478,6 +534,22 @@
 
         document.getElementById('contact-member-toggle')?.addEventListener('click', function () {
             document.getElementById('contact-member-form')?.classList.toggle('hidden');
+        });
+
+        // Pré-remplit seulement le message : l'admin le relit et l'envoie lui-même.
+        document.getElementById('request-identity-btn')?.addEventListener('click', function () {
+            const form = document.getElementById('contact-member-form');
+            const body = document.getElementById('contact-member-body');
+
+            form?.classList.remove('hidden');
+            document.getElementById('contact-member-related-type').value = '';
+            document.getElementById('contact-member-related-id').value = '';
+            document.getElementById('contact-member-related')?.classList.add('hidden');
+            document.getElementById('contact-member-subject').value = this.dataset.subject;
+            body.value = this.dataset.body;
+            body.rows = 12;
+            body.focus();
+            form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
         document.querySelectorAll('.declaration-discuss').forEach(function (button) {
